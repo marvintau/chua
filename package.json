@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll --coverage",
+    "bench": "node ./benchmark",
     "make-badges": "node_modules/.bin/jest-badges-readme'"
   },
   "jest": {
@@ -28,7 +29,10 @@
   },
   "devDependencies": {
     "@olavoparno/jest-badges-readme": "^1.4.1",
+    "benchmark": "^2.1.4",
     "husky": "^4.2.3",
-    "jest": "^25.2.4"
+    "jest": "^25.2.4",
+    "microtime": "^3.0.0",
+    "performance-now": "^2.1.0"
   }
 }

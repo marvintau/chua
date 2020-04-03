@@ -8,7 +8,19 @@ const getByIndex = (array, {path, withList}) => {
       record,
       list;
   
+  // const hash = path.toString();
+
   (withList) && (list = []);
+
+  // if (array.__cached === undefined){
+  //   Object.defineProperty(array, '__cached', {
+  //     value: {}
+  //   })
+  // }
+
+  // if (!withList && array.__cached[hash] !== undefined){
+  //   return array.__cached[hash];
+  // }
 
   for (let i = 0; i < path.length; i++){
 
@@ -25,6 +37,7 @@ const getByIndex = (array, {path, withList}) => {
     siblings = record.__children || [];
   }
 
+  // array.__cached[hash] = {record, siblings};
   return {record, siblings, list};
 }
 
@@ -65,11 +78,16 @@ const get = (array, {path, column, withList=false}={}) => {
     throw {code: 'PATH_NOT_PROVIDED', from: 'get'}
   }
 
+  let res;
   if (Array.isArray(path) && path.every(isInteger)){
-    return getByIndex(array, {path, withList});
+    res = getByIndex(array, {path, withList});
   } else if (column !== undefined){
-    return getByColumn(array, {path, column, withList});
+    res = getByColumn(array, {path, column, withList});
+  } else {
+    throw {code: 'INVALID_PATH', from: 'get'};
   }
+
+  return res;
 }
 
 module.exports = get;

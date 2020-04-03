@@ -1,3 +1,7 @@
+Array.prototype.randomChoice = function(){
+  return this[Math.floor(Math.random() * this.length)];
+}
+
 const vowels = ['ar', 'ra', 're', 'co', 'mo', 'ge', 'be', 'ti'],
       ends = ['ll', 'st', 'lt', 'sch', 'ius'];
 
@@ -45,7 +49,7 @@ const getRecs = (num) => {
   return res;
 }
 
-describe('basic', () => {
+describe('function correctness', () => {
 
   const array = [];
 
@@ -157,8 +161,8 @@ describe('basic', () => {
 
     pathify(array);
     const flattened = flat(array);
-    const rec = flattened[Math.floor(Math.random() * flattened.length)];
-    console.log(rec.__path);
+    const rec = flattened.randomChoice();
+    console.log(rec, 'pacify');
     const {record} = get(array, {path: rec.__path});
     expect(rec).toBe(record);
   })
@@ -168,11 +172,11 @@ describe('basic', () => {
 
     sort(array, 'a');
     const flattened = flat(array);
-    const rec1 = flattened[Math.floor(Math.random() * flattened.length)];
+    const rec1 = flattened.randomChoice();
     
     sort(array, ({a})=> a)
     const flattened2 = flat(array);
-    const rec2 = flattened[Math.floor(Math.random() * flattened.length)];
+    const rec2 = flattened.randomChoice();
   })
 
   test('traversing', () => {

@@ -14,6 +14,8 @@ const addArray = (array, recs, atIndex) => {
   } else {
     throw {code: 'INVALID_REC', from: 'add'}
   }
+
+  return [...array];
 }
 
 /**
@@ -26,7 +28,7 @@ const addArray = (array, recs, atIndex) => {
  */
 const add = (array, recs, {path=[], column, atIndex}={}) => {
   if (path.length === 0){
-    addArray(array, recs);
+    return addArray(array, recs);
   } else {
     const {record} = get(array, {path, column});
 
@@ -36,10 +38,8 @@ const add = (array, recs, {path=[], column, atIndex}={}) => {
       }); // not enumerable.
     }
 
-    addArray(record.__children, recs, atIndex);
+    return addArray(record.__children, recs, atIndex);
   }
-
-  return [...array];
 }
 
 module.exports = add;
