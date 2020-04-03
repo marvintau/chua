@@ -1,4 +1,34 @@
-const {genName} = require('./gen-name');
+const vowels = ['ar', 'ra', 're', 'co', 'mo', 'ge', 'be', 'ti'],
+      ends = ['ll', 'st', 'lt', 'sch', 'ius'];
+
+function genName(vowelMinLen=4, vowelMaxLen=8, {end=true, capital=true}={}){
+  let len = Math.floor(Math.random()*(vowelMaxLen-vowelMinLen) + vowelMinLen);
+
+  // avoiding same vowel repeats too many times in a name.
+  let vowelMarked = vowels.map(e => ({key:e, rem:2}));
+
+  let name = '';
+  for (let i = 0; i < len; i++){
+    const vowelIndex = Math.floor(Math.random()*vowels.length);
+    const {key, rem} = vowelMarked[vowelIndex];
+    if(rem > 0){
+      vowelMarked[vowelIndex].rem --;
+      name += key;
+    }
+  }
+
+  // Both to make it looks more like a real name.
+  if (end) {
+    let endVowel = ends[Math.floor(Math.random()*ends.length)];
+    name += endVowel;
+  }
+
+  if (capital){
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+  }
+
+  return name;
+}
 
 let a = 1,
     b = a + 1;
