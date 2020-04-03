@@ -20,6 +20,8 @@ const del = (array, {atIndex, num, path=[], column}={}) => {
     
     delArray(record.__children || [], atIndex, num);
   }
+
+  return [...array];
 }
 
 module.exports = del;

@@ -21,6 +21,8 @@ const pathify = (array) => {
   }
 
   trav(array, func, 'PRE');
+
+  return [...array];
 }
 
 module.exports = pathify;

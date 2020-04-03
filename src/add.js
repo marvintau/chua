@@ -38,6 +38,8 @@ const add = (array, recs, {path=[], column, atIndex}={}) => {
 
     addArray(record.__children, recs, atIndex);
   }
+
+  return [...array];
 }
 
 module.exports = add;

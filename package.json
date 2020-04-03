@@ -4,10 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --watchAll --coverage"
+    "test": "jest --watchAll --coverage",
+    "make-badges": "node_modules/.bin/jest-badges-readme --coverageDir='./src'"
   },
   "jest": {
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$"
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$",
+    "coverageReporters": [
+      "json-summary",
+      "text",
+      "lcov"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "jest && node_modules/.bin/jest-badges-readme && git add 'README.md'"
+    }
   },
   "keywords": [],
   "author": "",
@@ -16,6 +27,8 @@
     "is-plain-object": "^3.0.0"
   },
   "devDependencies": {
+    "@olavoparno/jest-badges-readme": "^1.4.1",
+    "husky": "^4.2.3",
     "jest": "^25.2.4"
   }
 }

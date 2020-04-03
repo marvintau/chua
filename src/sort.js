@@ -21,6 +21,8 @@ const sort = (array, key) => {
   }
 
   trav(array, sortFunc, 'POST');
+
+  return [...array];
 }
 
 module.exports = sort;
