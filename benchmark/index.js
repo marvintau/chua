@@ -32,24 +32,31 @@ const getRandomChildren = (array) => {
   }
 }
 
+const timings = [];
+
 const start = now();
 for (let i = 0; i < 50000; i++){
   const children = getRandomChildren(bigArray) ;
   add(children, {num: Math.random() * 1000, name:Math.random().toString(7, 32)});
 }  
 const afterInit = now();
-console.log(afterInit - start, 'init');
+timings.push({timeElapsed: afterInit - start});
 pathify(bigArray);
 const afterPath = now();
-console.log(afterPath - afterInit, 'pathified');
+timings.push({timeElapsed: afterPath - afterInit});
 const flattened = flat(bigArray);
 const paths = flattened.map(({__path}) => __path);
-const interval = now() - afterPath;
-console.log(interval, 'flattened');
+const afterFlatten = now();
+timings.push({timeElapsed: afterFlatten - afterPath});
+for (let elem of timings){
+  elem.timeElapsed = elem.timeElapsed.toFixed(6).padStart(20);
+}
+console.table(timings);
 
-suite.add('init', () => {
-  const path = paths.randomChoice();
-  get(bigArray, {path});
-}).on('complete', function(){
-  console.log(this[0].times);
-}).run({async: false})
+
+// suite.add('init', () => {
+//   const path = paths.randomChoice();
+//   get(bigArray, {path});
+// }).on('complete', function(){
+//   console.log(this[0].times);
+// }).run({async: false})
