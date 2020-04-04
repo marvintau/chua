@@ -1,12 +1,12 @@
 {
   "name": "@marvintau/chua",
   "version": "1.0.0",
-  "description": "",
+  "description": "| Statements | Branches | Functions | Lines | | -----------|----------|-----------|-------| | ![Statements](https://img.shields.io/badge/Coverage-99.31%25-brightgreen.svg \"Make me better!\") | ![Branches](https://img.shields.io/badge/Coverage-88.64%25-yellow.svg \"Make me better!\") | ![Functions](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg \"Make me better!\") | ![Lines](https://img.shields.io/badge/Coverage-99.28%25-brightgreen.svg \"Make me better!\") |",
   "main": "dist/index.js",
   "scripts": {
     "test": "jest --watchAll --coverage",
     "bench": "node ./benchmark",
-    "make-badges": "node_modules/.bin/jest-badges-readme'"
+    "make-badges": "jest-badges-readme'"
   },
   "jest": {
     "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$",
@@ -22,8 +22,8 @@
     }
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "marvintau",
+  "license": "MIT",
   "dependencies": {
     "is-plain-object": "^3.0.0"
   },
@@ -34,5 +34,16 @@
     "jest": "^25.2.4",
     "microtime": "^3.0.0",
     "performance-now": "^2.1.0"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marvintau/tree.git"
+  },
+  "bugs": {
+    "url": "https://github.com/marvintau/tree/issues"
+  },
+  "homepage": "https://github.com/marvintau/tree#readme"
 }
