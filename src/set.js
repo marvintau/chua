@@ -1,4 +1,4 @@
-const isPlainObject = require('is-plain-object');
+const {isPlainObject} = require('./util');
 const get = require('./get');
 
 const set = (array, kvs, path=[], col) => {
