@@ -12,22 +12,12 @@ const getByIndex = (array, {path, withList}) => {
 
   (withList) && (list = []);
 
-  // if (array.__cached === undefined){
-  //   Object.defineProperty(array, '__cached', {
-  //     value: {}
-  //   })
-  // }
-
-  // if (!withList && array.__cached[hash] !== undefined){
-  //   return array.__cached[hash];
-  // }
-
   for (let i = 0; i < path.length; i++){
 
     record = siblings[path[i]];
     
     if (record === undefined){
-      throw {code: 'NOT_FOUND_REC_INDEX', from: 'getByIndex'};
+      break;
     }
 
     if (withList){
@@ -37,7 +27,6 @@ const getByIndex = (array, {path, withList}) => {
     siblings = record.__children || [];
   }
 
-  // array.__cached[hash] = {record, siblings};
   return {record, siblings, list};
 }
 
@@ -56,7 +45,7 @@ const getByColumn = (array, {path, column, withList}={}) => {
     record = siblings.find(({[column]:colVal}) => colVal === path[i]);
 
     if (record === undefined){
-      throw {code: 'NOT_FOUND_REC_COL', from: 'getByColumn'};
+      break;
     }
 
     if (withList) {

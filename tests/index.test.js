@@ -103,8 +103,8 @@ describe('function correctness', () => {
     expect(leaf.__children).toBe(undefined);
     
     // not found
-    expect(() => get(array, {path: [0, 1, 2, 3]})).toThrow();
-    expect(() => get(array, {path: ['asd'], column:'name'})).toThrow();
+    expect(get(array, {path: [0, 1, 2, 3]}).record).toBe(undefined);
+    expect(get(array, {path: ['asd'], column:'name'}).record).toBe(undefined);
 
     // not provided
     expect(() => get(array, {})).toThrow();
