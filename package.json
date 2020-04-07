@@ -14,7 +14,8 @@
       "json-summary",
       "text",
       "lcov"
-    ]
+    ],
+    "verbose": true
   },
   "husky": {
     "hooks": {

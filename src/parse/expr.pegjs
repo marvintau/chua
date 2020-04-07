@@ -177,7 +177,7 @@ Factor
   / Integer
 
 Variable 'variable'
-  = _ '$' lit:Literal* {
+  = _ lit:Literal {
 
     if (lit in varsLocal){
       return varsLocal[lit];
@@ -185,7 +185,7 @@ Variable 'variable'
       // console.log('here');
       return varsLocal[__COL_ALIASES[lit]];
     } else {
-      error.Var = {code: 'VAR_NOT_FOUND', varName:lit[0]};
+      error.Var = {code: 'VAR_NOT_FOUND', varName:lit};
       return 0;
     }
   }

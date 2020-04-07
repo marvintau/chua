@@ -42,6 +42,7 @@ const paths = flattened.map(({__path}) => __path);
 
 describe('evaluating expr', () => {
   test('parsing simple arithmetic', () => {
+    expect(parse('1').result).toBe(1);
     expect(parse('-5').result).toBe(-5);
     expect(parse('-5.123').result).toBe(-5.123);
     expect(parse('1+1').result).toBe(2);
@@ -60,29 +61,29 @@ describe('evaluating expr', () => {
   test('parsing expression with variable table', () => {
 
 
-    expect(parse('1 + $a', {tables}).result).toBe(2);
-    expect(parse('-$a', {tables}).result).toBe(-1);
-    expect(parse('3+ $b / $c', {tables}).result).toBe(5);
+    expect(parse('1 + a', {tables}).result).toBe(2);
+    expect(parse('-a', {tables}).result).toBe(-1);
+    expect(parse('3+ b / c', {tables}).result).toBe(5);
   })
   
   test('中文变量支持', () => {
-    expect(parse('1+$借方-$贷方', {tables}).result).toBe(11);
+    expect(parse('1+借方-贷方', {tables}).result).toBe(11);
   })
 
   test('indexColumn alias', () => {
-    expect(parse('1 + $aaa', {tables}).result).toBe(2);
+    expect(parse('1 + aaa', {tables}).result).toBe(2);
   })
   
   test('throwing error', () => {
-    const {result, code} = parse('$asdbsd');
+    const {result, code} = parse('asdbsd');
     expect(result).toBe(0);
     expect(code.code).toBe('VAR_NOT_FOUND');
     expect(code.varName).toBe('asdbsd');
   })
   
   test('comparison', () => {
-    expect(parse('$a === $b', {tables}).result).toBe(1);
-    expect(parse('$a === $c', {tables}).result).toBe('EQUAL');
+    expect(parse('a === b', {tables}).result).toBe(1);
+    expect(parse('a === c', {tables}).result).toBe('EQUAL');
   })
 
   test('malformed expression', () => {
@@ -96,7 +97,7 @@ describe('var register', () => {
     const tables = {__VARS:{}};
     parse('asd@1', {tables});
     expect(tables.__VARS.asd).toBe(1);
-    expect(parse('1+$asd', {tables}).result).toBe(2);
+    expect(parse('1+asd', {tables}).result).toBe(2);
   }) 
 })
 
@@ -139,13 +140,13 @@ describe('path', () => {
   })
 
   test('not found var', () => {
-    const {result, code} = parse(`ARRAY:${pathString}:$askd1`, {tables});
+    const {result, code} = parse(`ARRAY:${pathString}:askd1`, {tables});
     expect(result).toBe(0);
     expect(code).toBe("VAR_NOT_FOUND");
   })
 
   test ('normal', () => {
-    const {result, code} = parse(`ARRAY:${pathString}:($num * 2)+1`, {tables});
+    const {result, code} = parse(`ARRAY:${pathString}:(num * 2)+1`, {tables});
     expect(result).toBe(record.num * 2 + 1);
     expect(code).toBe(undefined);
   })
@@ -153,6 +154,6 @@ describe('path', () => {
   test('path alias', () => {
     const altPath = [...pathName.slice(0, -1), 'aaa'].join('/');
     const __PATH_ALIASES = {aaa: [pathName.last()]};
-    const {result, code} = parse(`ARRAY:${altPath}:($num * 2)+1`, {tables: {...tables, __PATH_ALIASES}});
+    const {result, code} = parse(`ARRAY:${altPath}:(num * 2)+1`, {tables: {...tables, __PATH_ALIASES}});
   })
 })
