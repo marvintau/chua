@@ -8,7 +8,15 @@ module.exports = {
 	output: {
 		path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
-    library: 'tree',
+    library: 'chua',
     libraryTarget: 'umd',
-	}
+  },
+  module: {
+    rules: [
+      {
+        test: /\.pegjs$/,
+        loader: 'pegjs-loader'
+      }
+    ]
+  }
 };

@@ -6,6 +6,7 @@ const {trav} = require('./util');
 const get = require('./get');
 const add = require('./add');
 const del = require('./del');
+const parse = require('./parse');
 
 module.exports = {
   add,
@@ -15,5 +16,6 @@ module.exports = {
   flat,
   trav,
   group,
+  parse,
   pathify
 }

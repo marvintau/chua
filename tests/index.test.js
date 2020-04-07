@@ -54,7 +54,8 @@ describe('function correctness', () => {
   const array = [];
 
   test('adding', () => {
-    const {add, get} = require('../src');
+    const {add, get} = require('../dist');
+    
 
     // add single
     add(array, getRec());
@@ -83,7 +84,7 @@ describe('function correctness', () => {
 
   test('getting', () => {
     const withList = true;
-    const {get} = require('../src');
+    const {get} = require('../dist');
     
     let {record:recordIndex, list:listIndex} = get(array, {path: [0, 0, 0]});
     expect(recordIndex.a).toBe(15);
@@ -111,7 +112,7 @@ describe('function correctness', () => {
   })
 
   test('removing', () => {
-    const {get, del} = require('../src');
+    const {get, del} = require('../dist');
 
     const beforeLast = array.slice(-2, -1)[0];
     del(array);
@@ -131,7 +132,7 @@ describe('function correctness', () => {
   })
 
   test('flattening', () => {
-    const {trav, flat} = require('../src');
+    const {trav, flat} = require('../dist');
 
     const count = (array) => {
       let counter = 0 ;
@@ -143,7 +144,7 @@ describe('function correctness', () => {
   })
 
   test('group', () => {
-    const {add, group} = require('../src');
+    const {add, group} = require('../dist');
 
     const groupArr = [];
     add(groupArr, {a: 'a', b:'b'});
@@ -157,18 +158,17 @@ describe('function correctness', () => {
   })
 
   test('pathify', () => {
-    const {flat, pathify, get} = require('../src');
+    const {flat, pathify, get} = require('../dist');
 
     pathify(array);
     const flattened = flat(array);
     const rec = flattened.randomChoice();
-    console.log(rec, 'pacify');
     const {record} = get(array, {path: rec.__path});
     expect(rec).toBe(record);
   })
 
   test('sort', () => {
-    const {sort, flat, get} = require('../src');
+    const {sort, flat, get} = require('../dist');
 
     sort(array, 'a');
     const flattened = flat(array);
@@ -180,7 +180,8 @@ describe('function correctness', () => {
   })
 
   test('traversing', () => {
-    const {trav} = require('../src');
+    const {trav} = require('../dist');
     expect(() => trav(array, e => e, 'OOPS')).toThrow();
   })
 })
+

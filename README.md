@@ -1,6 +1,6 @@
 | Statements | Branches | Functions | Lines |
 | -----------|----------|-----------|-------|
-| ![Statements](https://img.shields.io/badge/Coverage-97.45%25-brightgreen.svg "Make me better!") | ![Branches](https://img.shields.io/badge/Coverage-87.13%25-yellow.svg "Make me better!") | ![Functions](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg "Make me better!") | ![Lines](https://img.shields.io/badge/Coverage-98.65%25-brightgreen.svg "Make me better!") |
+| ![Statements](https://img.shields.io/badge/Coverage-86.19%25-yellow.svg "Make me better!") | ![Branches](https://img.shields.io/badge/Coverage-71.8%25-red.svg "Make me better!") | ![Functions](https://img.shields.io/badge/Coverage-80.17%25-yellow.svg "Make me better!") | ![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg "Make me better!") |
 
 Chuā - 欻
 =========
@@ -19,7 +19,7 @@ Chuā - 欻
 * __children: 是一个Array，其中将会保存作为当前`Record`孩子的其它`Record`。树形结构就是靠它实现的。__children只有在执行向`Record`添加孩子的时候才会创建。
 * __path: 是一个Array，保存从最外层Array通向当前`Record`所经过的所有`Record`的children的索引。有时我们会创建一些新的数据结构（譬如将树形结构的Array进行flatten操作），但是希望能通过新的数据结构对
 
-## get
+## `get`
 
 ```
 get(array, {path, column, withList})
@@ -41,10 +41,10 @@ get(array, {path, column, withList})
 * `sublings`: 要找的`Record`所在的__children
 * `list`: 如果`withList`参数值为`true`，那么`list`中将包含从`array`到`record`之间所有经过的record
 
-## add
+## `add`
 
 ```
-add(array, recs, {path, column, withList})
+add(array, recs, {path, column, adIndex})
 ```
 **其中：**
 * `recs`:     待插入的`Record`，或者包含`Record`的Array
@@ -53,13 +53,15 @@ add(array, recs, {path, column, withList})
   * 当path是一个array of integer时，将通过每一级record.__children的index来寻找。
   * 当path是一个array of string时，则通过每一级record.__children中，某一字段匹配path中的值来寻找。此时需要给定column，也就是字段名，否则会报错。
 * `column`:   当path是array of string时所提供的字段名。
-* `withList`: 如果`withList`的值为`true`，则返回值中将包含`list`，详见返回值的说明
+* `atIndex`: 添加记录的位置。如果atIndex是一个整数，则按照`Array.splice`的第一个参数向`array`或记录的`__children`添加记录，否则按`Array.push`向后添加。
 
-**Returns:**
-```
-{record, sublings, list}
-```
-**其中：**
-* `record`:   要找的那个`Record`
-* `sublings`: 要找的`Record`所在的__children
-* `list`: 如果`withList`参数值为`true`，那么`list`中将包含从`array`到`record`之间所有经过的record
+**Returns:** 无
+
+`add`和`get`的参数很类似，你能想到是因为`add`本身就用到了`get`。如果`path`指向了一个`Record`，那么会向这个`Record`的`__children`添加。如果`path`为空，或者没有第三个options的选项，那么会直接添加到array中。
+
+## `set`
+## `del`
+## `sort`
+## `flat`
+## `group`
+## `pathify`
