@@ -73,7 +73,7 @@ const get = (array, {path, indexColumn, withList=false}={}) => {
   } else if (indexColumn !== undefined){
     res = getByColumn(array, {path, indexColumn, withList});
   } else {
-    throw {code: 'INVALID_PATH', from: 'get'};
+    throw {code: 'INVALID_PATH', from: 'get', path};
   }
 
   return res;

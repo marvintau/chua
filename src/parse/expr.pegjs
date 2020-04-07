@@ -1,7 +1,7 @@
 {
 	var parserInstance = this;
     
-  var {func, tables, get} = parserInstance;
+  var {func, tables, get, self} = parserInstance;
 
   var {__VARS, __COL_ALIASES={}, __PATH_ALIASES={}} = tables;
 
@@ -35,26 +35,28 @@
 VarExpr
   = varName:Literal '@' ref:RefExpr {
     __VARS[varName] = ref.result;
+    return ref;
   }
   /RefExpr
 
 RefExpr
-  = PathExpr
-  / FuncExpr
-  / ArithExpr
+  = res:(FuncExpr / PathExpr / ArithExpr) {
+    return res;
+  }
 
 FuncExpr
-  = "=" funcName:Literal _ "(" _  arg:Integer _ ")" {
-    if ((funcName in func)){
-      return {result:func[funcName](arg)};
+  = "=" funcName:Literal _ "(" _  arg:Integer? _ ")" {
+    if (funcName in func){
+      const res = func[funcName](self);
+      // console.log(Object.keys(func), funcName, res, 'func');
+      return res;
     } else {
-      return { result: 0, code: "UNDEFINED_FUNC"}
+      return { result: 0, code: 'WARN_UNDEFINED_FUNC'}
     }
   }
 
 PathExpr
-  = SheetName ":" siblings:Path expr:(":" ArithExpr)* {
-
+  = SheetName ":" suggs:Path expr:(":" ArithExpr)* {
     let {Sheet, Path, Var} = error;
 
     let code, result = 0;
@@ -64,7 +66,7 @@ PathExpr
       code = Path;
     } else {
       if (expr.length === 0){
-        code = 'INCOMPLETE_REFERENCE_FORMAT'
+        code = 'WARN_INCOMPLETE_REFERENCE_FORMAT'
       } else if (Var) {
         code = error.Var.code;
       } else {
@@ -73,7 +75,7 @@ PathExpr
         code   = exprCode;
       }
     }
-    return { siblings, result, code }
+    return { suggs, result, code }
   }
 
 SheetName
@@ -81,7 +83,7 @@ SheetName
     const sheetName = text();
 
     if(tables[sheetName] === undefined){
-      error.Sheet = 'SHEET_NOT_EXISTS';
+      error.Sheet = 'WARN_SHEET_NOT_EXISTS';
     } else {
       table = tables[sheetName];
     }
@@ -106,7 +108,6 @@ Path
 
     if (record !== undefined){
       varsLocal = {...__VARS, ...record};
-      return siblings;
     } else {
       const candidatePaths = outer(path.map(seg => (seg in __PATH_ALIASES) ? __PATH_ALIASES[seg] : [seg] ));
       for (let candiPath of candidatePaths){
@@ -116,9 +117,9 @@ Path
           return siblings;
         }
       }
-      error.Path = 'RECORD_NOT_FOUND';
-      return siblings;
+      error.Path = 'WARN_RECORD_NOT_FOUND';
     }
+    return siblings.map(({[indexColumn]:col}) => col);
   }
 
 ArithExpr
@@ -132,10 +133,14 @@ Comp
     if (error.Var){
       return {
         result: 0,
-        code: error.Var
+        ...error.Var
       }
     } else {
-      return { result: (first === last) ? 'EQUAL' : Math.abs(first - last) }
+      const [result, code] = (first === last)
+        ? ['EQUAL', 'EQUAL']
+        : [Math.abs(first - last), 'DIFF']
+      
+      return {result, code}
     }
 
   }
@@ -146,7 +151,7 @@ ExprAlt
     if (error.Var) {
       return {
         result: 0,
-        code: error.Var
+        ...error.Var
       }
     } else {
       const result = tail.reduce(function(result, element) {
@@ -155,7 +160,7 @@ ExprAlt
           case '-': return result - element[3];
         }
       }, head ? head : 0);
-      return {result};
+      return {result, code: 'NORM'};
     }
 
   }
@@ -185,13 +190,13 @@ Variable 'variable'
       // console.log('here');
       return varsLocal[__COL_ALIASES[lit]];
     } else {
-      error.Var = {code: 'VAR_NOT_FOUND', varName:lit};
+      error.Var = {code: 'WARN_VAR_NOT_FOUND', varName:lit};
       return 0;
     }
   }
 
 Literal 'literal'
-  = [A-Za-z\u4E00-\u9FA5][A-Za-z0-9\u4E00-\u9FA5_]* {
+  = [A-Za-z&\u4E00-\u9FA5][A-Za-z0-9&\u4E00-\u9FA5_]* {
     return text();
   }
 
@@ -206,7 +211,7 @@ _ "whitespace"
 
 __ "wild" = .* {
   return {
-    code: 'MALFORMED',
+    code: 'WARN_MALFORMED',
     result: 0
   }
 }

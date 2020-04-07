@@ -101,13 +101,6 @@ describe('var register', () => {
   }) 
 })
 
-describe('func', () => {
-  const tables = {__VARS:{}};
-  test('func', () => {
-    expect(parse('=asd( 123 )', {tables, func:{asd:(i) => i * 2}}).result).toBe(246);
-  })
-})
-
 describe('path', () => {
 
   const indexColumn = 'name';

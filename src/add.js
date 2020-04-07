@@ -1,20 +1,51 @@
 const {isInteger, isPlainObject} = require('./util');
 const get = require('./get');
 
-const addArray = (array, recs, atIndex) => {
+const addArray = (array, recs, atIndex, basePath) => {
+
+  console.log(recs, 'addArray');
+
   if (Array.isArray(recs) && recs.every(isPlainObject)) {
     isInteger(atIndex)
-    ? array.splice(atIndex, ...recs)
+    ? array.splice(atIndex, 0, ...recs)
     : array.push(...recs);
   } else if (isPlainObject(recs)){
+    console.log('here');
     isInteger(atIndex)
-    ? array.splice(atIndex, recs)
+    ? array.splice(atIndex, 0, recs)
     : array.push(recs);
   } else {
-    throw {code: 'INVALID_REC', from: 'add'}
+    throw {code: 'INVALID_ADDING_REC', from: 'add'}
+  }
+
+  for (let i = 0; i < array.length; i++){
+    Object.defineProperty(array[i], '__path', {
+      value: [...basePath, (isInteger(atIndex) ? atIndex : 0) + i],
+      enumerable: false
+    })
   }
 
   return [...array];
+}
+
+const dupRec = (rec, init=true) => {
+  let newRec = {...rec};
+  newRec = JSON.parse(JSON.stringify(newRec));
+  
+  if (init){
+    for (let key in newRec) switch (typeof newRec[key]){
+      case 'number':
+        newRec[key] = 0; break;
+      case 'string':
+        newRec[key] = ""; break;
+      case 'undefined':
+        newRec[key] = ''; break;
+      default:
+        newRec[key] = {}; break;
+    }
+  }
+
+  return newRec;
 }
 
 /**
@@ -37,7 +68,15 @@ const add = (array, recs, {path=[], indexColumn, atIndex}={}) => {
       }); // not enumerable.
     }
 
-    return addArray(record.__children, recs, atIndex);
+    console.log(record, 'before add', record.__children.length)
+
+    if (recs === undefined){
+      recs = dupRec(record)
+    }
+
+    addArray(record.__children, recs, atIndex, path);
+
+    console.log(recs, 'after added', record.__children.length);
   }
 }
 
