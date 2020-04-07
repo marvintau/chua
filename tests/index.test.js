@@ -51,6 +51,7 @@ const getRecs = (num) => {
 
 describe('function correctness', () => {
 
+  const indexColumn = 'name';
   const array = [];
 
   test('adding', () => {
@@ -73,7 +74,7 @@ describe('function correctness', () => {
 
     // add records to specific node with path
     const {record, list} = get(array, {path: [0, 0, 0], withList:true});
-    add(array, getRecs(3), {path: list.map(({name}) => name), column:'name'});
+    add(array, getRecs(3), {path: list.map(({name}) => name), indexColumn});
     expect(record.__children.length).toBe(6);
 
     add(array, getRecs(10));
@@ -94,10 +95,10 @@ describe('function correctness', () => {
     expect(listIndex1.includes(recordIndex)).toBe(true);
 
     const namePath = listIndex1.map(({name}) => name);
-    let {record:recordPath} = get(array, {path: namePath, column:'name'})
+    let {record:recordPath} = get(array, {path: namePath, indexColumn})
     expect(recordPath.a).toBe(15);
 
-    let {list:pathList} = get(array, {path: namePath, column:'name', withList});
+    let {list:pathList} = get(array, {path: namePath, indexColumn, withList});
     expect(pathList.slice(-1)[0]).toBe(recordIndex);
 
     let {record: leaf} = get(array, {path: [0, 0, 0, 0], withList});
@@ -105,7 +106,7 @@ describe('function correctness', () => {
     
     // not found
     expect(get(array, {path: [0, 1, 2, 3]}).record).toBe(undefined);
-    expect(get(array, {path: ['asd'], column:'name'}).record).toBe(undefined);
+    expect(get(array, {path: ['asd'], indexColumn:'name'}).record).toBe(undefined);
 
     // not provided
     expect(() => get(array, {})).toThrow();
@@ -128,7 +129,7 @@ describe('function correctness', () => {
 
     const {list} = get(array, {path: [0, 0, 2], withList:true});
     const namePath = list.map(({name}) => name);
-    del(array, {path: namePath, column: 'name'});
+    del(array, {path: namePath, indexColumn});
   })
 
   test('flattening', () => {

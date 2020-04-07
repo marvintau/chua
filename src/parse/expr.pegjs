@@ -1,13 +1,13 @@
 {
 	var parserInstance = this;
     
-  var {func, data, get, column} = parserInstance;
+  var {func, tables, get} = parserInstance;
 
-  var {__VARS, __COL_ALIASES={}, __PATH_ALIASES={}} = data;
+  var {__VARS, __COL_ALIASES={}, __PATH_ALIASES={}} = tables;
 
+  var table;
   var varsLocal = {...__VARS};
 
-  var currArray;
   var error = {};
 
   const outer = (listOfLists) => {
@@ -80,10 +80,10 @@ SheetName
   = Literal {
     const sheetName = text();
 
-    if(data[sheetName] === undefined){
+    if(tables[sheetName] === undefined){
       error.Sheet = 'SHEET_NOT_EXISTS';
     } else {
-      currArray = data[sheetName];
+      table = tables[sheetName];
     }
   }
 
@@ -100,7 +100,9 @@ Path
       return result.concat(elem[1]);
     }, [head]);
 
-    let {record, siblings} = get(currArray, {path, column})
+    const {data, indexColumn} = table;
+
+    let {record, siblings} = get(data, {path, indexColumn})
 
     if (record !== undefined){
       varsLocal = {...__VARS, ...record};
@@ -108,7 +110,7 @@ Path
     } else {
       const candidatePaths = outer(path.map(seg => (seg in __PATH_ALIASES) ? __PATH_ALIASES[seg] : [seg] ));
       for (let candiPath of candidatePaths){
-        let {record, siblings} = get(currArray, {path: candiPath, column})
+        let {record, siblings} = get(data, {path: candiPath, indexColumn})
         if (record !== undefined){
           varsLocal = {...__VARS, ...record};
           return siblings;

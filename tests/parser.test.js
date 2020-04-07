@@ -8,7 +8,7 @@ Array.prototype.last = function() {
   return this[this.length - 1];
 }
 
-const ARRAY = [];
+const data = [];
 
 const getRandomChildren = (array) => {
   if (Math.random() > 0.5 || array.length === 0){
@@ -33,11 +33,11 @@ const getRandomChildren = (array) => {
 }
 
 for (let i = 0; i < 5000; i++){
-  const children = getRandomChildren(ARRAY) ;
+  const children = getRandomChildren(data) ;
   add(children, {num: Math.random() * 1000, name:'S' + Math.random().toString(31).slice(2, -4).toUpperCase()});
 }
-pathify(ARRAY);
-const flattened = flat(ARRAY);
+pathify(data);
+const flattened = flat(data);
 const paths = flattened.map(({__path}) => __path);
 
 describe('evaluating expr', () => {
@@ -50,7 +50,7 @@ describe('evaluating expr', () => {
     expect(parse('(-3)*(5-2.5)').result).toBe(-7.5);
   });
 
-  const data = {
+  const tables = {
     __VARS: {
       a: 1, b:2, c:1, 借方: 20, 贷方:10
     },
@@ -60,17 +60,17 @@ describe('evaluating expr', () => {
   test('parsing expression with variable table', () => {
 
 
-    expect(parse('1 + $a', {data}).result).toBe(2);
-    expect(parse('-$a', {data}).result).toBe(-1);
-    expect(parse('3+ $b / $c', {data}).result).toBe(5);
+    expect(parse('1 + $a', {tables}).result).toBe(2);
+    expect(parse('-$a', {tables}).result).toBe(-1);
+    expect(parse('3+ $b / $c', {tables}).result).toBe(5);
   })
   
   test('中文变量支持', () => {
-    expect(parse('1+$借方-$贷方', {data}).result).toBe(11);
+    expect(parse('1+$借方-$贷方', {tables}).result).toBe(11);
   })
 
-  test('column alias', () => {
-    expect(parse('1 + $aaa', {data}).result).toBe(2);
+  test('indexColumn alias', () => {
+    expect(parse('1 + $aaa', {tables}).result).toBe(2);
   })
   
   test('throwing error', () => {
@@ -81,8 +81,8 @@ describe('evaluating expr', () => {
   })
   
   test('comparison', () => {
-    expect(parse('$a === $b', {data}).result).toBe(1);
-    expect(parse('$a === $c', {data}).result).toBe('EQUAL');
+    expect(parse('$a === $b', {tables}).result).toBe(1);
+    expect(parse('$a === $c', {tables}).result).toBe('EQUAL');
   })
 
   test('malformed expression', () => {
@@ -93,59 +93,59 @@ describe('evaluating expr', () => {
 describe('var register', () => {
   test('var', () => {
 
-    const data = {__VARS:{}};
-    parse('asd@1', {data});
-    expect(data.__VARS.asd).toBe(1);
-    expect(parse('1+$asd', {data}).result).toBe(2);
+    const tables = {__VARS:{}};
+    parse('asd@1', {tables});
+    expect(tables.__VARS.asd).toBe(1);
+    expect(parse('1+$asd', {tables}).result).toBe(2);
   }) 
 })
 
 describe('func', () => {
-  const data = {__VARS:{}};
+  const tables = {__VARS:{}};
   test('func', () => {
-    expect(parse('=asd( 123 )', {data, func:{asd:(i) => i * 2}}).result).toBe(246);
+    expect(parse('=asd( 123 )', {tables, func:{asd:(i) => i * 2}}).result).toBe(246);
   })
 })
 
 describe('path', () => {
 
-  const data = {ARRAY};
-  const column = 'name';
+  const indexColumn = 'name';
+  const tables = {ARRAY:{data, indexColumn}};
 
   const path = paths.randomChoice();
-  const {list} = get(ARRAY, {path, withList:true});
+  const {list} = get(data, {path, withList:true});
   const pathName = list.map(({name}) => name);
-  const {record, siblings} = get(ARRAY, {path: pathName, column:'name'});
+  const {record, siblings} = get(data, {path: pathName, indexColumn});
   const pathString = pathName.join('/');  
 
   test('name', () => {
-    const {result, code} = parse(`YO:${pathString}:1`, {data});
+    const {result, code} = parse(`YO:${pathString}:1`, {tables});
     expect(result).toBe(0);
     expect(code).toBe('SHEET_NOT_EXISTS');
   })
 
   test('incomplete path', () => {
     const nonExistPathString = pathString.slice(0, -3);
-    const {result, code, siblings:sibs} = parse(`ARRAY:${nonExistPathString}`, {data, column});
+    const {result, code, siblings:sibs} = parse(`ARRAY:${nonExistPathString}`, {tables});
     expect(result).toBe(0);
     expect(code).toBe('RECORD_NOT_FOUND');
     expect(sibs).toBe(siblings);
   })
 
   test('complete path but no expr', () => {
-    const {result, code} = parse(`ARRAY:${pathString}`, {data, column});
+    const {result, code} = parse(`ARRAY:${pathString}`, {tables});
     expect(result).toBe(0);
     expect(code).toBe("INCOMPLETE_REFERENCE_FORMAT");
   })
 
   test('not found var', () => {
-    const {result, code} = parse(`ARRAY:${pathString}:$askd1`, {data, column});
+    const {result, code} = parse(`ARRAY:${pathString}:$askd1`, {tables});
     expect(result).toBe(0);
     expect(code).toBe("VAR_NOT_FOUND");
   })
 
   test ('normal', () => {
-    const {result, code} = parse(`ARRAY:${pathString}:($num * 2)+1`, {data, column});
+    const {result, code} = parse(`ARRAY:${pathString}:($num * 2)+1`, {tables});
     expect(result).toBe(record.num * 2 + 1);
     expect(code).toBe(undefined);
   })
@@ -153,6 +153,6 @@ describe('path', () => {
   test('path alias', () => {
     const altPath = [...pathName.slice(0, -1), 'aaa'].join('/');
     const __PATH_ALIASES = {aaa: [pathName.last()]};
-    const {result, code} = parse(`ARRAY:${altPath}:($num * 2)+1`, {data: {ARRAY, __PATH_ALIASES}, column});
+    const {result, code} = parse(`ARRAY:${altPath}:($num * 2)+1`, {tables: {...tables, __PATH_ALIASES}});
   })
 })

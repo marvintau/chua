@@ -25,11 +25,11 @@ const addArray = (array, recs, atIndex) => {
  * @param {[]} array array to be operated
  * @param {[]|{}} recs record(s) to be added
  */
-const add = (array, recs, {path=[], column, atIndex}={}) => {
+const add = (array, recs, {path=[], indexColumn, atIndex}={}) => {
   if (path.length === 0){
     return addArray(array, recs);
   } else {
-    const {record} = get(array, {path, column});
+    const {record} = get(array, {path, indexColumn});
 
     if (record.__children === undefined){
       Object.defineProperty(record, '__children', {

@@ -12,11 +12,11 @@ const delArray = (array, atIndex, num) => {
   }
 }
 
-const del = (array, {atIndex, num, path=[], column}={}) => {
+const del = (array, {atIndex, num, path=[], indexColumn}={}) => {
   if (path.length === 0){
     delArray(array, atIndex, num);
   } else {
-    const {record} = get(array, {path, column});
+    const {record} = get(array, {path, indexColumn});
     
     delArray(record.__children || [], atIndex, num);
   }

@@ -30,7 +30,7 @@ const getByIndex = (array, {path, withList}) => {
   return {record, siblings, list};
 }
 
-const getByColumn = (array, {path, column, withList}={}) => {
+const getByColumn = (array, {path, indexColumn, withList}={}) => {
 
   let siblings = array,
       record,
@@ -42,7 +42,7 @@ const getByColumn = (array, {path, column, withList}={}) => {
   
   for (let i = 0; i < path.length; i++){
 
-    record = siblings.find(({[column]:colVal}) => colVal === path[i]);
+    record = siblings.find(({[indexColumn]:colVal}) => colVal === path[i]);
 
     if (record === undefined){
       break;
@@ -61,7 +61,7 @@ const getByColumn = (array, {path, column, withList}={}) => {
 
 }
 
-const get = (array, {path, column, withList=false}={}) => {
+const get = (array, {path, indexColumn, withList=false}={}) => {
 
   if (path === undefined){
     throw {code: 'PATH_NOT_PROVIDED', from: 'get'}
@@ -70,8 +70,8 @@ const get = (array, {path, column, withList=false}={}) => {
   let res;
   if (Array.isArray(path) && path.every(isInteger)){
     res = getByIndex(array, {path, withList});
-  } else if (column !== undefined){
-    res = getByColumn(array, {path, column, withList});
+  } else if (indexColumn !== undefined){
+    res = getByColumn(array, {path, indexColumn, withList});
   } else {
     throw {code: 'INVALID_PATH', from: 'get'};
   }
