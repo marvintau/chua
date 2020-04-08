@@ -3,14 +3,11 @@ const get = require('./get');
 
 const addArray = (array, recs, atIndex, basePath) => {
 
-  console.log(recs, 'addArray');
-
   if (Array.isArray(recs) && recs.every(isPlainObject)) {
     isInteger(atIndex)
     ? array.splice(atIndex, 0, ...recs)
     : array.push(...recs);
   } else if (isPlainObject(recs)){
-    console.log('here');
     isInteger(atIndex)
     ? array.splice(atIndex, 0, recs)
     : array.push(recs);
@@ -21,7 +18,8 @@ const addArray = (array, recs, atIndex, basePath) => {
   for (let i = 0; i < array.length; i++){
     Object.defineProperty(array[i], '__path', {
       value: [...basePath, (isInteger(atIndex) ? atIndex : 0) + i],
-      enumerable: false
+      enumerable: false,
+      configurable: true
     })
   }
 
@@ -56,11 +54,16 @@ const dupRec = (rec, init=true) => {
  * @param {[]} array array to be operated
  * @param {[]|{}} recs record(s) to be added
  */
-const add = (array, recs, {path=[], indexColumn, atIndex}={}) => {
+const add = (array, recs, {path=[], atIndex}={}) => {
   if (path.length === 0){
-    return addArray(array, recs);
+    return addArray(array, recs, atIndex, path);
   } else {
-    const {record} = get(array, {path, indexColumn});
+
+    if (path.some(i => !isInteger(i))) {
+      throw({code: 'INDEX_COLUMN_NOT_SUPPORTED', from: 'add'});
+    }
+
+    const {record} = get(array, {path});
 
     if (record.__children === undefined){
       Object.defineProperty(record, '__children', {
@@ -68,7 +71,7 @@ const add = (array, recs, {path=[], indexColumn, atIndex}={}) => {
       }); // not enumerable.
     }
 
-    console.log(record, 'before add', record.__children.length)
+    // console.log(record, 'before add', record.__children.length)
 
     if (recs === undefined){
       recs = dupRec(record)
@@ -76,7 +79,7 @@ const add = (array, recs, {path=[], indexColumn, atIndex}={}) => {
 
     addArray(record.__children, recs, atIndex, path);
 
-    console.log(recs, 'after added', record.__children.length);
+    // console.log(recs, 'after added', record.__children.length);
   }
 }
 

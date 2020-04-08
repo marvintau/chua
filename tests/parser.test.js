@@ -59,8 +59,6 @@ describe('evaluating expr', () => {
   }
 
   test('parsing expression with variable table', () => {
-
-
     expect(parse('1 + a', {tables}).result).toBe(2);
     expect(parse('-a', {tables}).result).toBe(-1);
     expect(parse('3+ b / c', {tables}).result).toBe(5);
@@ -75,10 +73,10 @@ describe('evaluating expr', () => {
   })
   
   test('throwing error', () => {
-    const {result, code} = parse('asdbsd');
+    const {result, code, varName} = parse('asdbsd');
     expect(result).toBe(0);
-    expect(code.code).toBe('VAR_NOT_FOUND');
-    expect(code.varName).toBe('asdbsd');
+    expect(code).toBe('WARN_VAR_NOT_FOUND');
+    expect(varName).toBe('asdbsd');
   })
   
   test('comparison', () => {
@@ -87,7 +85,7 @@ describe('evaluating expr', () => {
   })
 
   test('malformed expression', () => {
-    expect(() => parse('<>[]')).toThrowError('Expect');
+    expect(parse('<>[]').result).toBe('表达式错误');
   })
 })
 
@@ -115,33 +113,33 @@ describe('path', () => {
   test('name', () => {
     const {result, code} = parse(`YO:${pathString}:1`, {tables});
     expect(result).toBe(0);
-    expect(code).toBe('SHEET_NOT_EXISTS');
+    expect(code).toBe('WARN_SHEET_NOT_EXISTS');
   })
 
   test('incomplete path', () => {
     const nonExistPathString = pathString.slice(0, -3);
-    const {result, code, siblings:sibs} = parse(`ARRAY:${nonExistPathString}`, {tables});
+    const {result, code, suggs} = parse(`ARRAY:${nonExistPathString}`, {tables});
     expect(result).toBe(0);
-    expect(code).toBe('RECORD_NOT_FOUND');
-    expect(sibs).toBe(siblings);
+    expect(code).toBe('WARN_RECORD_NOT_FOUND');
+    expect(suggs).toEqual(siblings.map(({name}) => name));
   })
 
   test('complete path but no expr', () => {
     const {result, code} = parse(`ARRAY:${pathString}`, {tables});
     expect(result).toBe(0);
-    expect(code).toBe("INCOMPLETE_REFERENCE_FORMAT");
+    expect(code).toBe("WARN_INCOMPLETE_REFERENCE_FORMAT");
   })
 
   test('not found var', () => {
     const {result, code} = parse(`ARRAY:${pathString}:askd1`, {tables});
     expect(result).toBe(0);
-    expect(code).toBe("VAR_NOT_FOUND");
+    expect(code).toBe("WARN_VAR_NOT_FOUND");
   })
 
   test ('normal', () => {
     const {result, code} = parse(`ARRAY:${pathString}:(num * 2)+1`, {tables});
     expect(result).toBe(record.num * 2 + 1);
-    expect(code).toBe(undefined);
+    expect(code).toBe('NORM');
   })
 
   test('path alias', () => {

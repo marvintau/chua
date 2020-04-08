@@ -66,7 +66,7 @@ const get = (array, {path, indexColumn, withList=false}={}) => {
   if (path === undefined){
     throw {code: 'PATH_NOT_PROVIDED', from: 'get'}
   }
-
+  // console.log(path, indexColumn, 'get');
   let res;
   if (Array.isArray(path) && path.every(isInteger)){
     res = getByIndex(array, {path, withList});
