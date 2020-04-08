@@ -1,7 +1,7 @@
 var now = require("performance-now")
 const Benchmark = require('benchmark');
 
-const {add, get, pathify, flat} = require('../src');
+const {add, get, trav, flat} = require('../src');
 
 const suite = new Benchmark.Suite;
 const bigArray = [];
@@ -41,7 +41,7 @@ for (let i = 0; i < 50000; i++){
 }  
 const afterInit = now();
 timings.push({timeElapsed: afterInit - start});
-pathify(bigArray);
+trav(bigArray);
 const afterPath = now();
 timings.push({timeElapsed: afterPath - afterInit});
 const flattened = flat(bigArray);

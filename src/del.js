@@ -1,7 +1,6 @@
 const {isInteger} = require('./util');
 const get = require('./get');
 
-
 const delArray = (array, atIndex, num) => {
   if (isInteger(atIndex)) {
     array.splice(atIndex, num);
@@ -20,8 +19,6 @@ const del = (array, {atIndex, num=1, path=[], indexColumn}={}) => {
     console.log(record, atIndex, 'before delete');
     delArray(record.__children || [], atIndex, num);
   }
-
-  return [...array];
 }
 
 module.exports = del;

@@ -1,26 +1,18 @@
 const {isInteger, isPlainObject} = require('./util');
 const get = require('./get');
 
-const addArray = (array, recs, atIndex, basePath) => {
+const addArray = (array, recs, atIndex) => {
 
   if (Array.isArray(recs) && recs.every(isPlainObject)) {
     isInteger(atIndex)
-    ? array.splice(atIndex, 0, ...recs)
+    ? array.splice(atIndex+1, 0, ...recs)
     : array.push(...recs);
   } else if (isPlainObject(recs)){
     isInteger(atIndex)
-    ? array.splice(atIndex, 0, recs)
+    ? array.splice(atIndex+1, 0, recs)
     : array.push(recs);
   } else {
     throw {code: 'INVALID_ADDING_REC', from: 'add'}
-  }
-
-  for (let i = 0; i < array.length; i++){
-    Object.defineProperty(array[i], '__path', {
-      value: [...basePath, (isInteger(atIndex) ? atIndex : 0) + i],
-      enumerable: false,
-      configurable: true
-    })
   }
 
   return [...array];
@@ -29,7 +21,7 @@ const addArray = (array, recs, atIndex, basePath) => {
 const dupRec = (rec, init=true) => {
   let newRec = {...rec};
   newRec = JSON.parse(JSON.stringify(newRec));
-  
+  console.log(newRec, 'added');
   if (init){
     for (let key in newRec) switch (typeof newRec[key]){
       case 'number':
@@ -56,7 +48,7 @@ const dupRec = (rec, init=true) => {
  */
 const add = (array, recs, {path=[], atIndex}={}) => {
   if (path.length === 0){
-    return addArray(array, recs, atIndex, path);
+    addArray(array, recs, atIndex, path);
   } else {
 
     if (path.some(i => !isInteger(i))) {
@@ -77,8 +69,7 @@ const add = (array, recs, {path=[], atIndex}={}) => {
       recs = dupRec(record)
     }
 
-    addArray(record.__children, recs, atIndex, path);
-
+    addArray(record.__children, recs, atIndex);
     // console.log(recs, 'after added', record.__children.length);
   }
 }

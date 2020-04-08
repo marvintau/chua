@@ -62,7 +62,8 @@ PathExpr
     let code, result = 0;
     if (Sheet) {
       code = Sheet;
-    } else if (Path){
+    } else if (Path && !Path.startsWith('INFO')){
+      console.log(Path, 'path error');
       code = Path;
     } else {
       if (expr.length === 0){
@@ -72,7 +73,7 @@ PathExpr
       } else {
         const {result:exprRes, code:exprCode} = expr[0][1];
         result = exprRes;
-        code   = exprCode;
+        code   = Path !== undefined ? Path : exprCode;
       }
     }
     return { suggs, result, code }
@@ -114,6 +115,7 @@ Path
         let {record, siblings} = get(data, {path: candiPath, indexColumn})
         if (record !== undefined){
           varsLocal = {...__VARS, ...record};
+          error.Path = 'INFO_ALTER_PATH';
           return siblings;
         }
       }
@@ -137,8 +139,8 @@ Comp
       }
     } else {
       const [result, code] = (first === last)
-        ? ['EQUAL', 'EQUAL']
-        : [Math.abs(first - last), 'DIFF']
+        ? ['EQUAL', 'SUCC_TEST']
+        : [Math.abs(first - last), 'WARN_NOT_EQUAL']
       
       return {result, code}
     }

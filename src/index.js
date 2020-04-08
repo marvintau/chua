@@ -1,4 +1,3 @@
-const pathify = require('./pathify');
 const group = require('./group');
 const sort = require('./sort');
 const flat = require('./flat');
@@ -19,5 +18,4 @@ module.exports = {
   trav,
   group,
   parse,
-  pathify
 }

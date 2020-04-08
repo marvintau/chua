@@ -1,4 +1,4 @@
-const {add, get, pathify, flat, parse} = require('../dist');
+const {add, get, flat, trav, parse} = require('../dist');
 
 Array.prototype.randomChoice = function(){
   return this[Math.floor(Math.random() * this.length)];
@@ -36,7 +36,7 @@ for (let i = 0; i < 5000; i++){
   const children = getRandomChildren(data) ;
   add(children, {num: Math.random() * 1000, name:'S' + Math.random().toString(31).slice(2, -4).toUpperCase()});
 }
-pathify(data);
+trav(data);
 const flattened = flat(data);
 const paths = flattened.map(({__path}) => __path);
 
@@ -84,9 +84,9 @@ describe('evaluating expr', () => {
     expect(parse('a === c', {tables}).result).toBe('EQUAL');
   })
 
-  test('malformed expression', () => {
-    expect(parse('<>[]').result).toBe('表达式错误');
-  })
+  // test('malformed expression', () => {
+  //   expect(parse('<>[]').result).toBe('表达式错误');
+  // })
 })
 
 describe('var register', () => {
@@ -146,5 +146,7 @@ describe('path', () => {
     const altPath = [...pathName.slice(0, -1), 'aaa'].join('/');
     const __PATH_ALIASES = {aaa: [pathName.last()]};
     const {result, code} = parse(`ARRAY:${altPath}:(num * 2)+1`, {tables: {...tables, __PATH_ALIASES}});
+    expect(code).toBe('INFO_ALTER_PATH')
+    expect
   })
 })

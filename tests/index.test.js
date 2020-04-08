@@ -157,30 +157,16 @@ describe('function correctness', () => {
     expect(group(groupArr, ({a}) => a.length)['1'].length).toBe(2);
   })
 
-  test('pathify', () => {
-    const {flat, pathify, get} = require('../dist');
+  test('trav', () => {
+    const {flat, trav, get} = require('../dist');
 
-    pathify(array);
+    trav(array);
     const flattened = flat(array);
     const rec = flattened.randomChoice();
+    console.log(rec.__path, 'trav');
     const {record} = get(array, {path: rec.__path});
     expect(rec).toBe(record);
-  })
 
-  test('sort', () => {
-    const {sort, flat, get} = require('../dist');
-
-    sort(array, 'a');
-    const flattened = flat(array);
-    const rec1 = flattened.randomChoice();
-    
-    sort(array, ({a})=> a)
-    const flattened2 = flat(array);
-    const rec2 = flattened.randomChoice();
-  })
-
-  test('traversing', () => {
-    const {trav} = require('../dist');
     expect(() => trav(array, e => e, 'OOPS')).toThrow();
   })
 })
