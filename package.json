@@ -35,7 +35,8 @@
     "pegjs": "^0.10.0",
     "pegjs-loader": "^0.5.6",
     "performance-now": "^2.1.0",
-    "webpack": "^4.42.1"
+    "webpack": "^4.42.1",
+    "window": "^4.2.7"
   },
   "directories": {
     "test": "tests"

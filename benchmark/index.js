@@ -1,17 +1,22 @@
-var now = require("performance-now")
+var Window = require('window');
+global.window = new Window();
+
 const Benchmark = require('benchmark');
 
-const {add, get, trav, flat} = require('../src');
-
 const suite = new Benchmark.Suite;
+const {add, get, trav, flat, parse} = require('../dist');
+
 const bigArray = [];
 
 Array.prototype.randomChoice = function(){
   return this[Math.floor(Math.random() * this.length)];
 }
 
+const PROB_ADD_ROOT = 0.3,
+      PROB_GO_DEEP = 0;
+
 const getRandomChildren = (array) => {
-  if (Math.random() > 0.5 || array.length === 0){
+  if (Math.random() < PROB_ADD_ROOT || array.length === 0){
     return array;
   } else {
 
@@ -19,7 +24,7 @@ const getRandomChildren = (array) => {
 
     while (list !== undefined && list.length > 0){
       rec = list.randomChoice();
-      if (Math.random() > 0.5 || rec == undefined){
+      if (Math.random() < PROB_GO_DEEP || rec == undefined){
         break;
       } else {
         list = rec.__children;
@@ -32,31 +37,46 @@ const getRandomChildren = (array) => {
   }
 }
 
-const timings = [];
-
-const start = now();
-for (let i = 0; i < 50000; i++){
+for (let i = 0; i < 500; i++){
   const children = getRandomChildren(bigArray) ;
-  add(children, {num: Math.random() * 1000, name:Math.random().toString(7, 32)});
+  add(children, {num: Math.random() * 1000, name:'S' + Math.random().toString(32).slice(4, 10)});
 }  
-const afterInit = now();
-timings.push({timeElapsed: afterInit - start});
 trav(bigArray);
-const afterPath = now();
-timings.push({timeElapsed: afterPath - afterInit});
 const flattened = flat(bigArray);
-const paths = flattened.map(({__path}) => __path);
-const afterFlatten = now();
-timings.push({timeElapsed: afterFlatten - afterPath});
-for (let elem of timings){
-  elem.timeElapsed = elem.timeElapsed.toFixed(6).padStart(20);
+
+const TAKE = 100;
+
+let paths = flattened.map(({__path}) => __path);
+let namePath = [], withList = true;
+for (let i = 0, len = paths.length; i < len; i++){
+  const path = paths[i];
+  const {list} = get(bigArray, {path, withList});
+  // console.log(get)
+  namePath.push(list.map(({name}) => name));
 }
-console.table(timings);
+namePath.sort((a, b) => b.length - a.length);
+namePath = namePath.slice(0, TAKE);
+paths = paths.slice(0, TAKE);
+console.log(namePath);
 
+const parseData = {tables:{ARRAY:{data:bigArray, indexColumn:'name'}}};
 
-// suite.add('init', () => {
-//   const path = paths.randomChoice();
-//   get(bigArray, {path});
-// }).on('complete', function(){
-//   console.log(this[0].times);
-// }).run({async: false})
+suite
+.add('index-column-path', () => {
+  const path = namePath.randomChoice();
+  get(bigArray, {path, indexColumn:'name'});
+})
+.add('index-path', () => {
+  const path = paths.randomChoice();
+  get(bigArray, {path});
+})
+.add('parse-arith-expr', () => {
+  parse('(3 + 1) * 2.5', {});
+})
+.add('parse-addressing', () => {
+  const path = namePath.randomChoice();
+  parse(`ARRAY:${path.join('/')}:(num * 2)+1`, parseData);
+})
+.on('complete', function(){
+  console.log(this.map(({name, times})=> ({name, times})));
+}).run({async: false})

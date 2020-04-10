@@ -12,19 +12,15 @@ const getByIndex = (array, {path, withList}) => {
 
   (withList) && (list = []);
 
-  for (let i = 0; i < path.length; i++){
+  for (let i = 0, len = path.length; i < len; i++){
 
     record = siblings[path[i]];
     
-    if (record === undefined){
-      break;
-    }
+    if (record === undefined){ break }
 
-    if (withList){
-      list.push(record);
-    }
+    (withList) && list.push(record);
     
-    siblings = record.__children || [];
+    (i < path.length - 1) && (siblings = record.__children || []);
   }
 
   return {record, siblings, list};
@@ -36,25 +32,19 @@ const getByColumn = (array, {path, indexColumn, withList}={}) => {
       record,
       list;
 
-  if (withList) {
-    list = [];
-  }
+  (withList) && (list = []);
   
-  for (let i = 0; i < path.length; i++){
+  for (let i = 0, len = path.length; i < len; i++){
 
     record = siblings.find(({[indexColumn]:colVal}) => colVal === path[i]);
 
-    if (record === undefined){
-      break;
-    }
+    if (record === undefined){ break; }
 
     if (withList) {
       list.push(record);
     }
     
-    if (i < path.length - 1){
-      siblings = record.__children || [];
-    }
+    (i < path.length - 1) && (siblings = record.__children || []);
   }
 
   return {record, siblings, list};
