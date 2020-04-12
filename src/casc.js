@@ -1,3 +1,4 @@
+const sort = require('./sort');
 const group = require('./group');
 
 function casc(array, {cascCol, genFunc, matchFunc}={}) {
@@ -27,7 +28,10 @@ function casc(array, {cascCol, genFunc, matchFunc}={}) {
 
     // 如果记录没有children这个属性则清空
     for (let i = 0; i < parents.length; i++){
-      parents[i].__children = [];
+      Object.defineProperty(parents[i], '__children', {
+        value: [],
+        configurable: true
+      })
     }
     
     // 在两代中间进行匹配

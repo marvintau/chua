@@ -6,7 +6,6 @@ module.exports = (expr, {func={}, tables={}, self={}}={}) => {
   try {
     return parser.parse(expr);
   } catch (e) {
-    console.error(e);
     return {result: '表达式错误', code: 'FAIL'}
   }
 }

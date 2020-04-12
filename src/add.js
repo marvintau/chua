@@ -41,10 +41,25 @@ const dupRec = (rec, init=true) => {
 /**
  * Add
  * ---------
- * 向树组中的给定位置添加一条或若干条记录。
+ * 向级联记录中的给定位置添加一条或若干条记录。
  * 
  * @param {[]} array array to be operated
- * @param {[]|{}} recs record(s) to be added
+ * @param {?[]|{}} recs record(s) to be added
+ * @param {{path:[], atIndex:number}} options indicating where to insert the record(s), where
+ *    - `path`: the path to some specific record
+ *    - `atIndex`: the index of the children of the record to be inserted to
+ * 
+ * @returns undefined
+ * 
+ * @example
+ * const array = [{num: 0, name: 'asd'}, {num: 1, name:'dsda'}];
+ * add(array, {num:2, name:'bsd'});
+ * console.log(array);
+ * 
+ * @example
+ * const array = [{num: 0, name: 'asd'}, {num: 1, name:'dsda'}];
+ * add(array, {num:2, name:'bsd'}, {path=[0]});
+ * console.log(array);
  */
 const add = (array, recs, {path=[], atIndex}={}) => {
   if (path.length === 0){
@@ -63,14 +78,11 @@ const add = (array, recs, {path=[], atIndex}={}) => {
       }); // not enumerable.
     }
 
-    // console.log(record, 'before add', record.__children.length)
-
     if (recs === undefined){
       recs = dupRec(record)
     }
 
     addArray(record.__children, recs, atIndex);
-    // console.log(recs, 'after added', record.__children.length);
   }
 }
 

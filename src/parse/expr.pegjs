@@ -32,6 +32,12 @@
 
 }
 
+DesctExpr
+  = _ desc:Literal _ '|' _ ref:VarExpr {
+    return {...ref, desc};
+  }
+  / VarExpr
+
 VarExpr
   = varName:Literal '@' ref:RefExpr {
     __VARS[varName] = ref.result;
@@ -198,7 +204,7 @@ Variable 'variable'
   }
 
 Literal 'literal'
-  = [A-Za-z&\u4E00-\u9FA5][A-Za-z0-9&\u4E00-\u9FA5_]* {
+  = [A-Za-z&#\u4E00-\u9FA5][A-Za-z0-9&#\u4E00-\u9FA5_]* {
     return text();
   }
 

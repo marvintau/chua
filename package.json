@@ -25,7 +25,9 @@
   "keywords": [],
   "author": "marvintau",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "xlsx": "^0.15.6"
+  },
   "devDependencies": {
     "@olavoparno/jest-badges-readme": "^1.4.1",
     "benchmark": "^2.1.4",

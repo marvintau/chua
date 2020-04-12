@@ -125,10 +125,6 @@ describe('function correctness', () => {
     const anotherLastThrid = array.slice(-4)[0];
     del(array, {num:3, atIndex:array.length - 3})
     expect(array.slice(-1)[0]).toBe(anotherLastThrid);
-
-    const {list} = get(array, {path: [0, 0, 2], withList:true});
-    const namePath = list.map(({name}) => name);
-    del(array, {path: namePath, indexColumn});
   })
 
   test('flattening', () => {
