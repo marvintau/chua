@@ -29,14 +29,7 @@
 
     return res;
   }
-
 }
-
-DesctExpr
-  = _ desc:Literal _ '|' _ ref:VarExpr {
-    return {...ref, desc};
-  }
-  / VarExpr
 
 VarExpr
   = varName:Literal '@' ref:RefExpr {
@@ -144,10 +137,12 @@ Comp
         ...error.Var
       }
     } else {
-      const [result, code] = (first === last)
+      const [result, code] = (first === last || Math.abs(first - last) < 0.0001 )
         ? ['EQUAL', 'SUCC_TEST']
         : [Math.abs(first - last), 'WARN_NOT_EQUAL']
       
+      console.log(first - last, 'comp');
+
       return {result, code}
     }
 

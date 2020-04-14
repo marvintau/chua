@@ -148,9 +148,4 @@ describe('path', () => {
     const {result, code} = parse(`ARRAY:${altPath}:(num * 2)+1`, {tables: {...tables, __PATH_ALIASES}});
     expect(code).toBe('INFO_ALTER_PATH')
   })
-
-  test('annotation', () => {
-    const {desc} = parse('this | 3+2');
-    expect(desc).toBe('this');
-  })
 })

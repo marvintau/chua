@@ -1,38 +1,31 @@
-String.prototype.count = function(delim) {
-  return this.startsWith(delim) ? this.split(delim).length - 1 : 0;
-};
-
-Array.prototype.last = function(){
-  return this[this.length - 1]
-};
-
 const read = (table, {delim="#", indexColumn='ref'}={}) => {
 
+  count = function(string, delim) {
+    return string.startsWith(delim) ? string.split(delim).length - 1 : 0;
+  };
+  
+  last = function(array){
+    return array[array.length - 1]
+  };
+  
   const cascTable = [];
   const stack = [];
   
-  // when adding a new record into the table, we check where we are.
-  // If the stack is currently empty, we are adding the record to the cascTable.
-  // Otherwise, add to the children of the current stack top.
+  // Add a record to the table. Either add to the table directly, or
+  // push into the children of stack-top record.
   // 
-  // however, for each time before adding new record, the stack should
-  // pop to appropriate level.
+  // ============= NOTE FOR POSSIBLE REFACTOR IMPULSION ==============
+  // We are not going to assign the __children with Object.defineProperty
+  // here, because the non-enumerable properties WILL NOT BE serilaized.
+  // 
+  // Also, we are not going to assign __path although we can do it here,
+  // because when evaluating the sheet in the client side, we are going
+  // to perform the 'trav', which will be initializing the __path.
   const add = (rec) =>{
-    const configurable = true;
 
-    const props = (path) => ({
-      '__path': {value: path, configurable},
-      '__children': {value: [], configurable}
-    })
+    Object.assign(rec, {__children:[]});
 
-    if (stack.length > 0){
-      const {__children:subs, __path:path} = stack.last();
-      Object.defineProperties(rec, props(path.concat(subs.length)));
-      subs.push(rec);
-    } else {
-      Object.defineProperties(rec, props([cascTable.length]));
-      cascTable.push(rec);
-    }
+    (stack.length > 0 ? last(stack).__children : cascTable).push(rec);
   }
   
   // pop the stack to desination level.
@@ -41,7 +34,7 @@ const read = (table, {delim="#", indexColumn='ref'}={}) => {
   //      to pop until there's Level 1, and add the coming one as
   //      the children of Level 1.
   const pop = (destLevel) => {
-    while (stack.length > 0 && stack.last()[indexColumn].count(delim) >= destLevel) {
+    while (stack.length > 0 && count(last(stack)[indexColumn], delim) >= destLevel) {
       stack.pop();
     };
   }
@@ -60,7 +53,7 @@ const read = (table, {delim="#", indexColumn='ref'}={}) => {
   //         3. push it onto the stack (and become the new stack top)
   for (let i = 0; i < table.length; i++){
     let rec = table[i];
-    let currLevel = rec[indexColumn].count(delim);
+    let currLevel = count(rec[indexColumn], delim);
     // console.log(stack.last() && stack.last().__children);
     if (currLevel > 0) {
       pop(currLevel);
