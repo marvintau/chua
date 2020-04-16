@@ -59,6 +59,7 @@ describe('evaluating expr', () => {
   }
 
   test('parsing expression with variable table', () => {
+    expect(parse('0', {tables}).result).toBe(0);
     expect(parse('1 + a', {tables}).result).toBe(2);
     expect(parse('-a', {tables}).result).toBe(-1);
     expect(parse('3+ b / c', {tables}).result).toBe(5);

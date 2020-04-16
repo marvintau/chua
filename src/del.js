@@ -38,7 +38,7 @@ const del = (array, {atIndex, num=1, path=[]}={}) => {
   if (path.length === 0){
     delArray(array, atIndex, num);
   } else {
-    const {record} = get(array, {path, indexColumn});
+    const {record} = get(array, {path});
     console.log(record, atIndex, 'before delete');
     delArray(record.__children || [], atIndex, num);
   }
