@@ -1,4 +1,4 @@
-const {isInteger, isPlainObject} = require('./util');
+const {isInteger, isPlainObject, trav} = require('./util');
 const get = require('./get');
 
 const addArray = (array, recs, atIndex) => {
@@ -19,7 +19,7 @@ const addArray = (array, recs, atIndex) => {
 }
 
 const dupRec = (rec, init=true) => {
-  let newRec = {...rec, __path, __children};
+  let {__path, __children, ...newRec} = rec;
   newRec = JSON.parse(JSON.stringify(newRec));
   console.log(newRec, 'added');
   if (init){
@@ -82,6 +82,7 @@ const add = (array, recs, {path=[], atIndex}={}) => {
 
     addArray(record.__children, recs, atIndex);
   }
+  trav(array);
 }
 
 module.exports = add;

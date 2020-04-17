@@ -1,4 +1,4 @@
-const {isInteger} = require('./util');
+const {isInteger, trav} = require('./util');
 const get = require('./get');
 
 const delArray = (array, atIndex, num) => {
@@ -42,6 +42,7 @@ const del = (array, {atIndex, num=1, path=[]}={}) => {
     console.log(record, atIndex, 'before delete');
     delArray(record.__children || [], atIndex, num);
   }
+  trav(array);
 }
 
 module.exports = del;
