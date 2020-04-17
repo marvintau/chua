@@ -56,13 +56,10 @@ const trav = (array, func= e=>e, dir='PRE', path=[]) => {
     const rec = array[i];
     const currPath = path.concat(i);
 
-    Object.defineProperty(rec, '__path', { value: currPath, configurable: true});
+    Object.assign(rec, {__path: currPath});
 
     (dir === 'PRE') && func(rec, currPath);
     if (Array.isArray(rec.__children)){
-      if (rec.propertyIsEnumerable('__children')){
-        Object.defineProperty(rec, '__children', {value: rec.__children, enumerable: false});
-      }
       trav(rec.__children, func, dir, currPath);
     }
     (dir === 'POST') && func(rec, currPath);

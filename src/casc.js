@@ -28,10 +28,7 @@ function casc(array, {cascCol, genFunc, matchFunc}={}) {
 
     // 如果记录没有children这个属性则清空
     for (let i = 0; i < parents.length; i++){
-      Object.defineProperty(parents[i], '__children', {
-        value: [],
-        configurable: true
-      })
+      parents[i].__children = [];
     }
     
     // 在两代中间进行匹配

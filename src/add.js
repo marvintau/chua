@@ -23,7 +23,7 @@ const dupRec = (rec, init=true) => {
   newRec = JSON.parse(JSON.stringify(newRec));
   console.log(newRec, 'added');
   if (init){
-    for (let key in newRec) switch (typeof newRec[key]){
+    for (let key in newRec) if (!key.startsWith('__')) switch (typeof newRec[key]){
       case 'number':
         newRec[key] = 0; break;
       case 'string':
@@ -73,9 +73,7 @@ const add = (array, recs, {path=[], atIndex}={}) => {
     const {record} = get(array, {path});
 
     if (record.__children === undefined){
-      Object.defineProperty(record, '__children', {
-        value: []
-      }); // not enumerable.
+      record.__children = [];
     }
 
     if (recs === undefined){
