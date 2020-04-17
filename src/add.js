@@ -19,7 +19,7 @@ const addArray = (array, recs, atIndex) => {
 }
 
 const dupRec = (rec, init=true) => {
-  let newRec = {...rec};
+  let newRec = {...rec, __path, __children};
   newRec = JSON.parse(JSON.stringify(newRec));
   console.log(newRec, 'added');
   if (init){
