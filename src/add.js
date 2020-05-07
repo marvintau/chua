@@ -63,7 +63,7 @@ const dupRec = (rec, init=true) => {
  */
 const add = (array, recs, {path=[], atIndex}={}) => {
   if (path.length === 0){
-    addArray(array, recs, atIndex, path);
+    addArray(array, recs, atIndex);
   } else {
 
     if (path.some(i => !isInteger(i))) {

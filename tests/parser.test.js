@@ -36,7 +36,13 @@ for (let i = 0; i < 5000; i++){
   const children = getRandomChildren(data) ;
   add(children, {num: Math.random() * 1000, name:'S' + Math.random().toString(31).slice(2, -4).toUpperCase()});
 }
+
 trav(data);
+
+add(data, {num: 0, name:'（）'}, {atIndex: -1});
+add(data, {num: 0, name:'【】'}, {atIndex: -1, path:[0]});
+add(data, {num: 123, name:'「」'}, {atIndex: -1, path:[0, 0]});
+
 const flattened = flat(data);
 const paths = flattened.map(({__path}) => __path);
 
@@ -123,6 +129,11 @@ describe('path', () => {
     expect(result).toBe(0);
     expect(code).toBe('WARN_RECORD_NOT_FOUND');
     expect(suggs).toEqual(siblings.map(({name}) => name));
+  })
+
+  test('中文特殊符号支持', () => {
+    const {result} = parse('ARRAY:（）/【】/「」:num', {tables})
+    expect(result).toBe(123);
   })
 
   test('complete path but no expr', () => {

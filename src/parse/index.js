@@ -3,9 +3,10 @@ const parser = require("./expr.pegjs")
 
 module.exports = (expr, {func={}, tables={}, self={}}={}) => {
   Object.assign(parser, {func, tables, get, self});
-  try {
+  // try {
     return parser.parse(expr);
-  } catch (e) {
-    return {result: '表达式错误', code: 'FAIL'}
-  }
+  // } catch (e) {
+  //   console.log(e, 'outer');
+  //   return {result: '表达式错误', code: 'FAIL'}
+  // }
 }

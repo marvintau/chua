@@ -199,7 +199,7 @@ Variable 'variable'
   }
 
 Literal 'literal'
-  = [A-Za-z&#\u4E00-\u9FA5][A-Za-z0-9&#\u4E00-\u9FA5_]* {
+  = [A-Za-z&#\u3000-\u303F\u4E00-\u9FA5\uFF00-\uFFEF][A-Za-z0-9&#\u3000-\u303F\u4E00-\u9FA5\uFF00-\uFFEF_]* {
     return text();
   }
 
