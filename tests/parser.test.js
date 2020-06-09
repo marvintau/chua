@@ -57,7 +57,7 @@ describe('evaluating expr', () => {
     expect(parse('(-3)*(5-2.5)').result).toBe(-7.5);
   });
 
-  const tables = {
+  const Sheets = {
     __VARS: {
       a: 1, b:2, c:1, 借方: 20, 贷方:10
     },
@@ -65,18 +65,18 @@ describe('evaluating expr', () => {
   }
 
   test('parsing expression with variable table', () => {
-    expect(parse('0', {tables}).result).toBe(0);
-    expect(parse('1 + a', {tables}).result).toBe(2);
-    expect(parse('-a', {tables}).result).toBe(-1);
-    expect(parse('3+ b / c', {tables}).result).toBe(5);
+    expect(parse('0', {Sheets}).result).toBe(0);
+    expect(parse('1 + a', {Sheets}).result).toBe(2);
+    expect(parse('-a', {Sheets}).result).toBe(-1);
+    expect(parse('3+ b / c', {Sheets}).result).toBe(5);
   })
   
   test('中文变量支持', () => {
-    expect(parse('1+借方-贷方', {tables}).result).toBe(11);
+    expect(parse('1+借方-贷方', {Sheets}).result).toBe(11);
   })
 
   test('indexColumn alias', () => {
-    expect(parse('1 + aaa', {tables}).result).toBe(2);
+    expect(parse('1 + aaa', {Sheets}).result).toBe(2);
   })
   
   test('throwing error', () => {
@@ -87,8 +87,8 @@ describe('evaluating expr', () => {
   })
   
   test('comparison', () => {
-    expect(parse('a === b', {tables}).result).toBe(1);
-    expect(parse('a === c', {tables}).result).toBe('EQUAL');
+    expect(parse('a === b', {Sheets}).result).toBe(1);
+    expect(parse('a === c', {Sheets}).result).toBe('EQUAL');
   })
 
   // test('malformed expression', () => {
@@ -99,17 +99,17 @@ describe('evaluating expr', () => {
 describe('var register', () => {
   test('var', () => {
 
-    const tables = {__VARS:{}};
-    parse('asd@1', {tables});
-    expect(tables.__VARS.asd).toBe(1);
-    expect(parse('1+asd', {tables}).result).toBe(2);
+    const Sheets = {__VARS:{}};
+    parse('asd@1', {Sheets});
+    expect(Sheets.__VARS.asd).toBe(1);
+    expect(parse('1+asd', {Sheets}).result).toBe(2);
   }) 
 })
 
 describe('path', () => {
 
   const indexColumn = 'name';
-  const tables = {ARRAY:{data, indexColumn}};
+  const Sheets = {ARRAY:{data, indexColumn}};
 
   const path = paths.randomChoice();
   const {list} = get(data, {path, withList:true});
@@ -118,38 +118,38 @@ describe('path', () => {
   const pathString = pathName.join('/');  
 
   test('name', () => {
-    const {result, code} = parse(`YO:${pathString}:1`, {tables});
+    const {result, code} = parse(`YO:${pathString}:1`, {Sheets});
     expect(result).toBe(0);
     expect(code).toBe('WARN_SHEET_NOT_EXISTS');
   })
 
   test('incomplete path', () => {
     const nonExistPathString = pathString.slice(0, -3);
-    const {result, code, suggs} = parse(`ARRAY:${nonExistPathString}`, {tables});
+    const {result, code, suggs} = parse(`ARRAY:${nonExistPathString}`, {Sheets});
     expect(result).toBe(0);
     expect(code).toBe('WARN_RECORD_NOT_FOUND');
     expect(suggs).toEqual(siblings.map(({name}) => name));
   })
 
   test('中文特殊符号支持', () => {
-    const {result} = parse('ARRAY:（）/【】/「」:num', {tables})
+    const {result} = parse('ARRAY:（）/【】/「」:num', {Sheets})
     expect(result).toBe(123);
   })
 
   test('complete path but no expr', () => {
-    const {result, code} = parse(`ARRAY:${pathString}`, {tables});
+    const {result, code} = parse(`ARRAY:${pathString}`, {Sheets});
     expect(result).toBe(0);
     expect(code).toBe("WARN_INCOMPLETE_REFERENCE_FORMAT");
   })
 
   test('not found var', () => {
-    const {result, code} = parse(`ARRAY:${pathString}:askd1`, {tables});
+    const {result, code} = parse(`ARRAY:${pathString}:askd1`, {Sheets});
     expect(result).toBe(0);
     expect(code).toBe("WARN_VAR_NOT_FOUND");
   })
 
   test ('normal', () => {
-    const {result, code} = parse(`ARRAY:${pathString}:(num * 2)+1`, {tables});
+    const {result, code} = parse(`ARRAY:${pathString}:(num * 2)+1`, {Sheets});
     expect(result).toBe(record.num * 2 + 1);
     expect(code).toBe('NORM');
   })
@@ -157,7 +157,7 @@ describe('path', () => {
   test('path alias', () => {
     const altPath = [...pathName.slice(0, -1), 'aaa'].join('/');
     const __PATH_ALIASES = {aaa: [pathName.last()]};
-    const {result, code} = parse(`ARRAY:${altPath}:(num * 2)+1`, {tables: {...tables, __PATH_ALIASES}});
+    const {result, code} = parse(`ARRAY:${altPath}:(num * 2)+1`, {Sheets: {...Sheets, __PATH_ALIASES}});
     expect(code).toBe('INFO_ALTER_PATH')
   })
 })

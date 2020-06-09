@@ -1,4 +1,4 @@
-const {trav} = require('./util');
+const trav = require('./trav');
 
 const sort = (array, key) => {
 

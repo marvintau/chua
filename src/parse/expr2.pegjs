@@ -1,12 +1,11 @@
 {
 	var parserInstance = this;
     
-  var {func, Sheets, get, self, outer} = parserInstance;
+  var {func, Sheets, vars} = parserInstance;
 
   var {__VARS, __COL_ALIASES={}, __PATH_ALIASES={}} = Sheets;
 
-  var table;
-  var varsLocal = {...__VARS};
+  var varsLocal = {...__VARS, ...vars};
 
   var error = {};
 
@@ -33,75 +32,6 @@ FuncExpr
     } else {
       return { result: 0, code: 'WARN_UNDEFINED_FUNC'}
     }
-  }
-
-PathExpr
-  = SheetName ":" suggs:Path expr:(":" ArithExpr)* {
-    let {Data, Path, Var} = error;
-
-    let code, result = 0;
-    if (Data) {
-      code = Data;
-    } else if (Path && !Path.startsWith('INFO')){
-      console.log(Path, 'path error');
-      code = Path;
-    } else {
-      if (expr.length === 0){
-        code = 'WARN_INCOMPLETE_REFERENCE_FORMAT'
-      } else if (Var) {
-        code = error.Var.code;
-      } else {
-        const {result:exprRes, code:exprCode} = expr[0][1];
-        result = exprRes;
-        code   = Path !== undefined ? Path : exprCode;
-      }
-    }
-    return { suggs, result, code }
-  }
-
-SheetName
-  = Literal {
-    const sheetName = text();
-
-    if(Sheets[sheetName] === undefined){
-      error.Data = 'WARN_SHEET_NOT_EXISTS';
-    } else {
-      table = Sheets[sheetName];
-    }
-  }
-
-Path
-  = head:Literal tail:("/" Literal)* {
-
-    // By here we did the parsing
-    if (error.Data) {
-      error.Path = error.Data;
-      return;
-    }
-
-    const path = tail.reduce((result, elem) => {
-      return result.concat(elem[1]);
-    }, [head]);
-
-    const {data, indexColumn} = table;
-
-    let {record, siblings} = get(data, {path, indexColumn})
-
-    if (record !== undefined){
-      varsLocal = {...__VARS, ...record};
-    } else {
-      const candidatePaths = outer(path.map(seg => (seg in __PATH_ALIASES) ? __PATH_ALIASES[seg] : [seg] ));
-      for (let candiPath of candidatePaths){
-        let {record, siblings} = get(data, {path: candiPath, indexColumn})
-        if (record !== undefined){
-          varsLocal = {...__VARS, ...record};
-          error.Path = 'INFO_ALTER_PATH';
-          return siblings;
-        }
-      }
-      error.Path = 'WARN_RECORD_NOT_FOUND';
-    }
-    return siblings.map(({[indexColumn]:col}) => col);
   }
 
 ArithExpr
@@ -192,10 +122,3 @@ Integer "integer"
 
 _ "whitespace"
   = [ \t\n\r]*
-
-__ "wild" = .* {
-  return {
-    code: 'WARN_MALFORMED',
-    result: 0
-  }
-}

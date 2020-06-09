@@ -1,4 +1,6 @@
-const {isInteger, trav} = require('./util');
+const {isInteger} = require('./util');
+
+const trav = require('./trav');
 const get = require('./get');
 
 const delArray = (array, atIndex, num) => {

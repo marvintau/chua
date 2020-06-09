@@ -1,4 +1,6 @@
-const {isInteger, isPlainObject, trav} = require('./util');
+const {isInteger, isPlainObject} = require('./util');
+
+const trav = require('./trav');
 const get = require('./get');
 
 const addArray = (array, recs, atIndex) => {

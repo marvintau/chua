@@ -1,8 +1,9 @@
 const get = require('../get');
+const outer = require('../outer');
 const parser = require("./expr.pegjs")
 
-module.exports = (expr, {func={}, tables={}, self={}}={}) => {
-  Object.assign(parser, {func, tables, get, self});
+module.exports = (expr, {func={}, Sheets={}, self={}}={}) => {
+  Object.assign(parser, {func, Sheets, get, self, outer});
   try {
     return parser.parse(expr);
   } catch (e) {
