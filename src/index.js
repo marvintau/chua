@@ -8,7 +8,7 @@ const get = require('./get');
 const set = require('./set');
 const add = require('./add');
 const del = require('./del');
-const parse = require('./parse');
+const parse = require('./eval');
 
 module.exports = {
   add,

@@ -3,12 +3,11 @@
     
   var {func, Sheets, vars} = parserInstance;
 
-  var {__VARS, __COL_ALIASES={}, __PATH_ALIASES={}} = Sheets;
+  var {__VARS, __COL_ALIASES={}} = Sheets;
 
   var varsLocal = {...__VARS, ...vars};
 
-  var error = {};
-
+  var error={};
 }
 
 VarExpr
@@ -19,7 +18,7 @@ VarExpr
   /RefExpr
 
 RefExpr
-  = res:(FuncExpr / PathExpr / ArithExpr) {
+  = res:(FuncExpr / ArithExpr) {
     return res;
   }
 
@@ -42,21 +41,38 @@ ArithExpr
 Comp
   = first:Factor _ "===" _ last:Factor {
     
-    if (error.Var){
-      return {
-        result: 0,
-        ...error.Var
-      }
+    if (error.code){
+      const {varName, code} = error;
+      let desc = varName && `名为${varName}的变量未找到`;
+      return {result: 0, code, desc}
     } else {
-      const [result, code] = (first === last || Math.abs(first - last) < 0.0001 )
+      const [result, code] = (first === last || Math.abs(first - last) < 1e-5 )
         ? ['EQUAL', 'SUCC_TEST']
         : [Math.abs(first - last), 'WARN_NOT_EQUAL']
       
-      console.log(first - last, 'comp');
-
       return {result, code}
     }
+  }
+  / first: Factor _ comp:('>' / '<' / '>=' / '<=') _ last: Factor {
 
+    if (error.code){
+      const {varName, code} = error;
+      let desc = varName && `名为${varName}的变量未找到`;
+      return {result: 0, code, desc}
+    } else {
+      const isSame = first === last || Math.abs(first - last) < 1e-5;
+      const isGreater = first > last;
+
+      const result = isSame
+      ? (['>=', '<='].includes(comp))
+      : isGreater
+      ? (['>=', '>'].includes(comp))
+      : (['<=', '<'].includes(comp))
+
+      const code = result ? 'SUCC' : 'WARN';
+
+      return {result, code};
+    }
   }
 
 ExprAlt
@@ -98,13 +114,13 @@ Factor
 Variable 'variable'
   = _ lit:Literal {
 
-    if (lit in varsLocal){
-      return varsLocal[lit];
-    } else if (__COL_ALIASES[lit] in varsLocal) {
+    if (varName in varsLocal){
+      return varsLocal[varName];
+    } else if (__COL_ALIASES[varName] in varsLocal) {
       // console.log('here');
-      return varsLocal[__COL_ALIASES[lit]];
+      return varsLocal[__COL_ALIASES[varName]];
     } else {
-      error.Var = {code: 'WARN_VAR_NOT_FOUND', varName:lit};
+      error.Var = {code: 'WARN_VAR_NOT_FOUND', varName};
       return 0;
     }
   }
