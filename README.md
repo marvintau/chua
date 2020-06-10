@@ -1,6 +1,6 @@
 | Statements | Branches | Functions | Lines |
 | -----------|----------|-----------|-------|
-| ![Statements](https://img.shields.io/badge/Coverage-74.6%25-red.svg "Make me better!") | ![Branches](https://img.shields.io/badge/Coverage-66.61%25-red.svg "Make me better!") | ![Functions](https://img.shields.io/badge/Coverage-69.11%25-red.svg "Make me better!") | ![Lines](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg "Make me better!") |
+| ![Statements](https://img.shields.io/badge/Coverage-70.95%25-red.svg "Make me better!") | ![Branches](https://img.shields.io/badge/Coverage-63.28%25-red.svg "Make me better!") | ![Functions](https://img.shields.io/badge/Coverage-67.28%25-red.svg "Make me better!") | ![Lines](https://img.shields.io/badge/Coverage-64.81%25-red.svg "Make me better!") |
 
 Chuā - 欻
 =========
