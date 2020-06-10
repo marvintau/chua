@@ -66,8 +66,14 @@ const assignSheet = (path, sourceRec, sourceSheet, Sheets, {ancestorOptions, des
 
   const {record:destRec} = fetchPath(path, Sheets);
 
+  trav(sourceSheet, (rec) => {
+    const {__assigned_ances: ances, __assigned_desc: desc} = rec;
+    ances.splice(ances.findIndex(sourceRec), 1)
+    desc.splice(desc.findIndex(sourceRec), 1);
+  })
+
   // Note the sequence.
-  // WHen assigning the ancestors, we have traversed the whole tabl,e
+  // WHen assigning the ancestors, we have traversed the whole table
   assignAncestors(sourceSheet, rec, ancestorOptions);
   assignDescendants(rec, descendantOptions);
   assignRec(sourceRec, destRec);

@@ -1,4 +1,3 @@
-const add = require('../src/add');
 const get = require('../src/get');
 const trav = require('../src/trav');
 
@@ -77,8 +76,43 @@ const getRandomPath = (name, array, {column='name', undef=false, replace=false}=
   return { origRec: rec, path, __PATH_ALIASES }
 }
 
+function genName(vowelMinLen=4, vowelMaxLen=8, {end=true, capital=true}={}){
+
+  const vowels = ['ar', 'ra', 're', 'co', 'mo', 'ge', 'be', 'ti'];
+  const ends = ['ll', 'st', 'lt', 'sch', 'ius'];
+
+
+  let len = Math.floor(Math.random()*(vowelMaxLen-vowelMinLen) + vowelMinLen);
+
+  // avoiding same vowel repeats too many times in a name.
+  let vowelMarked = vowels.map(e => ({key:e, rem:2}));
+
+  let name = '';
+  for (let i = 0; i < len; i++){
+    const vowelIndex = Math.floor(Math.random()*vowels.length);
+    const {key, rem} = vowelMarked[vowelIndex];
+    if(rem > 0){
+      vowelMarked[vowelIndex].rem --;
+      name += key;
+    }
+  }
+
+  // Both to make it looks more like a real name.
+  if (end) {
+    let endVowel = ends[Math.floor(Math.random()*ends.length)];
+    name += endVowel;
+  }
+
+  if (capital){
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+  }
+
+  return name;
+}
+
 module.exports = {
   createRandomData,
   getRandomRec,
-  getRandomPath
+  getRandomPath,
+  genName
 }

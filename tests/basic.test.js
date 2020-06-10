@@ -1,38 +1,4 @@
-Array.prototype.randomChoice = function(){
-  return this[Math.floor(Math.random() * this.length)];
-}
-
-const vowels = ['ar', 'ra', 're', 'co', 'mo', 'ge', 'be', 'ti'],
-      ends = ['ll', 'st', 'lt', 'sch', 'ius'];
-
-function genName(vowelMinLen=4, vowelMaxLen=8, {end=true, capital=true}={}){
-  let len = Math.floor(Math.random()*(vowelMaxLen-vowelMinLen) + vowelMinLen);
-
-  // avoiding same vowel repeats too many times in a name.
-  let vowelMarked = vowels.map(e => ({key:e, rem:2}));
-
-  let name = '';
-  for (let i = 0; i < len; i++){
-    const vowelIndex = Math.floor(Math.random()*vowels.length);
-    const {key, rem} = vowelMarked[vowelIndex];
-    if(rem > 0){
-      vowelMarked[vowelIndex].rem --;
-      name += key;
-    }
-  }
-
-  // Both to make it looks more like a real name.
-  if (end) {
-    let endVowel = ends[Math.floor(Math.random()*ends.length)];
-    name += endVowel;
-  }
-
-  if (capital){
-    name = name.charAt(0).toUpperCase() + name.slice(1);
-  }
-
-  return name;
-}
+const {genName} = require('./util');
 
 let a = 1,
     b = a + 1;
@@ -153,17 +119,5 @@ describe('function correctness', () => {
     expect(group(groupArr, ({a}) => a.length)['1'].length).toBe(2);
   })
 
-  test('trav', () => {
-    const {flat, trav, get} = require('../dist');
-
-    trav(array);
-    const flattened = flat(array);
-    const rec = flattened.randomChoice();
-    console.log(rec.__path, 'trav');
-    const {record} = get(array, {path: rec.__path});
-    expect(rec).toBe(record);
-
-    expect(() => trav(array, e => e, 'OOPS')).toThrow();
-  })
 })
 
