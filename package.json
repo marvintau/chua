@@ -1,6 +1,6 @@
 {
   "name": "@marvintau/chua",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "description": "| Statements | Branches | Functions | Lines | | -----------|----------|-----------|-------| | ![Statements](https://img.shields.io/badge/Coverage-99.31%25-brightgreen.svg \"Make me better!\") | ![Branches](https://img.shields.io/badge/Coverage-88.64%25-yellow.svg \"Make me better!\") | ![Functions](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg \"Make me better!\") | ![Lines](https://img.shields.io/badge/Coverage-99.28%25-brightgreen.svg \"Make me better!\") |",
   "main": "dist/index.js",
   "scripts": {
@@ -43,6 +43,7 @@
     "xlsx": "^0.15.6"
   },
   "devDependencies": {
+    "@commitlint/config-conventional": "^8.3.4",
     "@olavoparno/jest-badges-readme": "^1.4.1",
     "@wordpress/jest-preset-default": "^6.1.0",
     "benchmark": "^2.1.4",
