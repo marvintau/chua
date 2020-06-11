@@ -1,6 +1,6 @@
-| Statements | Branches | Functions | Lines |
+| 语句覆盖率 | 分支覆盖率 | 函数覆盖率 | 代码行覆盖率 |
 | -----------|----------|-----------|-------|
-| ![Statements](#statements# "Make me better!") | ![Branches](#branches# "Make me better!") | ![Functions](#functions# "Make me better!") | ![Lines](#lines# "Make me better!") |
+| ![Statements](#statements#) | ![Branches](#branches#) | ![Functions](#functions#) | ![Lines](#lines#) |
 
 Chuā - 欻
 =========
