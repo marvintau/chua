@@ -4,7 +4,15 @@ const get = require('./get');
 const trav = require('./trav');
 const fetch = require('./fetch');
 
-const assignDescendants = (sourceRec, options) => {
+const addUndo = (list, rec, {undo=false}={}) => {
+  if (undo) {
+    list.splice(list.findIndex(rec), 1);
+  } else {
+    list.push(rec);
+  }
+}
+
+const assignDescendants = (sourceRec, {undo=false}={}) => {
   sourceRec.__assigned_ances = [];
 
   const scanDescendant = (rec) => {
@@ -12,11 +20,8 @@ const assignDescendants = (sourceRec, options) => {
     if (rec.__assigned_ances === undefined) {
       rec.__assigned_ances = [];
     }
-    rec.__assigned_ances.push(sourceRec);
-    
-    if (options){
-      Object.assign(rec, options);
-    }
+
+    addUndo(rec.__assigned_ances, sourceRec, {undo})
   }
 
   if (sourceRec.__children){
@@ -24,7 +29,7 @@ const assignDescendants = (sourceRec, options) => {
   }
 }
 
-const assignAncestors = (sourceSheet, sourceRec, options) => {
+const assignAncestors = (sourceSheet, sourceRec, {undo=false}={}) => {
   sourceRec.__assigned_desc = [];
 
   const {list} = get(sourceSheet, {path: sourceRec.__path, withList: true});
@@ -33,8 +38,8 @@ const assignAncestors = (sourceSheet, sourceRec, options) => {
     if (rec.__assigned_desc === undefined) {
       rec.__assigned_desc = [];
     }
-    rec.__assigned_desc.push(sourceRec);
-    Object.assign(rec, options);
+    
+    addUndo(rec.__assigned_desc, sourceRec, {undo});
   }
 }
 
@@ -56,24 +61,28 @@ const assignRec = (sourceRec, destRec) => {
     if (destRec.__children === undefined) {
       destRec.__children = [];
     }
+    if (sourceRec.__destRecs === undefined) {
+      sourceRec.__destRecs = [];
+    }
+    sourceRec.__destRecs.push(destRec);
     add(destRec.__children, sourceRec);
   }
 }
 
-const assignSheet = (path, sourceRec, sourceSheet, Sheets, {ancestorOptions, descendantOptions}={}) => {
+const assignSheet = (path, sourceRec, sourceSheet, Sheets) => {
+
+  assignAncestors(sourceSheet, sourceRec, {undo:true})
+  assignDescendants(sourceRec, {undo:true})
+  for (let {__children:ch} of sourceRec.__destRecs) {
+    addUndo(ch, sourceRec, {undo:true});
+  }
 
   const {record:destRec} = fetch(path, Sheets);
 
-  trav(sourceSheet, (rec) => {
-    const {__assigned_ances: ances = [], __assigned_desc: desc = []} = rec;
-    ances.splice(ances.findIndex(rec => rec === sourceRec), 1);
-    desc.splice(desc.findIndex(rec => rec === sourceRec), 1);
-  })
-
   // Note the sequence.
   // WHen assigning the ancestors, we have traversed the whole table
-  assignAncestors(sourceSheet, sourceRec, ancestorOptions);
-  assignDescendants(sourceRec, descendantOptions);
+  assignAncestors(sourceSheet, sourceRec);
+  assignDescendants(sourceRec);
   assignRec(sourceRec, destRec);
 
 }
