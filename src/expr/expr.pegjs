@@ -24,10 +24,11 @@ RefExpr
   }
 
 FuncExpr
-  = "=" funcName:Literal _ "(" _  arg:Integer? _ ")" {
+  = "=" funcName:Literal _ "(" _  argsText: (LiteralTerm _ ( ',' _ LiteralTerm )*) _ ")" {
+    const args = argsText.flat().map((elem) => Array.isArray(elem) ? elem.slice(-1)[0] : elem);
     if (funcName in func){
-      const res = func[funcName](self);
-      // console.log(Object.keys(func), funcName, res, 'func');
+      // console.log(vars, args, 'res')
+      const res = func[funcName](vars, ...args);
       return res;
     } else {
       return { result: 0, code: 'WARN_UNDEFINED_FUNC'}
@@ -94,6 +95,8 @@ ExprAlt
     }
 
   }
+
+LiteralTerm = Literal / Real / Integer
 
 Term
   = head:Factor tail:(_ ("*" / "/") _ Factor)* {

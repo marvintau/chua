@@ -39,7 +39,11 @@ const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.5}={}) => {
     
     const rec = getRandomRec(data, {addProb, stopProb}) ;
     
-    const newRec = {num: Math.random() * 1000, name:'S' + Math.random().toString(31).slice(2, -4).toUpperCase()};
+    const newRec = {
+      num: Math.random() * 1000,
+      name:'S' + Math.random().toString(31).slice(2, -4).toUpperCase(),
+      calc:{result:Math.random() * 1000, code:'NORM'},
+    };
 
     if (rec !== data) {
       if(rec.__children === undefined) {
