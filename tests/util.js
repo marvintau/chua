@@ -31,7 +31,7 @@ const getRandomRec = (array, {addProb=-1, stopProb=-1}={}) => {
 }
 
 
-const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.1}={}) => {
+const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.5}={}) => {
 
   const data = []
 
@@ -55,11 +55,7 @@ const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.1}={}) => {
   return data;
 }
 
-const getRandomPath = (name, array, {column='name', undef=false, replace=false}={}) => {
-  const rec = getRandomRec(array);
-  const {__path} = rec;
-
-  const {list} = get(array, {path:__path, withList:true});
+const pathFromList = (name, list, {column='name', undef=false, replace=false}) => {
   const segs = list.map(({[column]:col}) => col);
 
   const repString = 'HAHA!@#!@#';
@@ -73,8 +69,23 @@ const getRandomPath = (name, array, {column='name', undef=false, replace=false}=
   }
 
   const path = `${name}:${segs.join('/')}`;
+  return {
+    path,
+    __PATH_ALIASES
+  }
+}
+
+const getRandomPath = (name, array, {column='name', undef=false, replace=false}={}) => {
+  const rec = getRandomRec(array);
+  const {__path} = rec;
+
+  const {list} = get(array, {path:__path, withList:true});
+
+  const {path, __PATH_ALIASES} = pathFromList(name, list, {column, undef, replace});
+
   return { origRec: rec, path, __PATH_ALIASES }
 }
+
 
 function genName(vowelMinLen=4, vowelMaxLen=8, {end=true, capital=true}={}){
 

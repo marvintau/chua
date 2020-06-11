@@ -45,6 +45,12 @@ const dupRec = (rec, init=true) => {
  * ---------
  * 向级联记录中的给定位置添加一条或若干条记录。
  * 
+ * 需要注意的是，所添加的记录未必会有合适的__path属性。如果您需要保证操作完成后
+ * 所有的记录都拥有__path属性，那么应该在add或执行批量add后进行一个trav操作。
+ * 
+ * 然而，由于trav操作会重新生成__path属性，因此如果您所添加的记录已经拥有了__path
+ * 并且打算保留它，那么就避免用trav。
+ * 
  * @param {[]} array array to be operated
  * @param {?[]|{}} recs record(s) to be added
  * @param {{path:[], atIndex:number}} options indicating where to insert the record(s), where
@@ -84,7 +90,6 @@ const add = (array, recs, {path=[], atIndex}={}) => {
 
     addArray(record.__children, recs, atIndex);
   }
-  trav(array);
 }
 
 module.exports = add;
