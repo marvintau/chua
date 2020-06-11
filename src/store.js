@@ -6,7 +6,7 @@ const fetch = require('./fetch');
 
 const addUndo = (list, rec, {undo=false}={}) => {
   if (undo) {
-    list.splice(list.findIndex(rec), 1);
+    list.splice(list.findIndex(r => r === rec), 1);
   } else {
     list.push(rec);
   }
@@ -61,11 +61,12 @@ const assignRec = (sourceRec, destRec) => {
     if (destRec.__children === undefined) {
       destRec.__children = [];
     }
+    add(destRec.__children, sourceRec);
+
     if (sourceRec.__destRecs === undefined) {
       sourceRec.__destRecs = [];
     }
     sourceRec.__destRecs.push(destRec);
-    add(destRec.__children, sourceRec);
   }
 }
 
@@ -73,9 +74,14 @@ const assignSheet = (path, sourceRec, sourceSheet, Sheets) => {
 
   assignAncestors(sourceSheet, sourceRec, {undo:true})
   assignDescendants(sourceRec, {undo:true})
-  for (let {__children:ch} of sourceRec.__destRecs) {
-    addUndo(ch, sourceRec, {undo:true});
-  }
+  
+  const {__destRecs:dest} = sourceRec;
+  if (dest) {
+    for (let {__children:ch} of dest) {
+      addUndo(ch, sourceRec, {undo:true});
+    }
+    dest.splice(0, dest.length);
+  }  
 
   const {record:destRec} = fetch(path, Sheets);
 

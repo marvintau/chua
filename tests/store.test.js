@@ -14,8 +14,6 @@ describe('assign', () => {
       TARGET: {data: createRandomData({recs:500, addProb:0.1, stopProb:0.1}), indexColumn: 'name'},
     }
 
-    const {origRec:destRec, path} = getRandomPath('TARGET', Sheets.TARGET.data, {column:'name'});
-
     let attempts = 0, sourceRec;
     while(true){
       attempts ++;
@@ -30,15 +28,35 @@ describe('assign', () => {
     }
 
     if (attempts > 0) {
+
+      const {origRec:destRec, path} = getRandomPath('TARGET', Sheets.TARGET.data, {column:'name'});
+
       store(path, sourceRec, Sheets.SOURCE.data, Sheets);
   
       const descs = flat(sourceRec.__children);
-      expect(descs.every(({__assigned_ances:[ances]}) => ances === sourceRec)).toBe(true);
-  
-      const {record, list} = get(Sheets.SOURCE.data, {path: sourceRec.__path, withList:true});
-      expect(record.name).toBe(sourceRec.name);
-      // expect(record).toBe(sourceRec);
+      const {list} = get(Sheets.SOURCE.data, {path: sourceRec.__path, withList:true});
+
+      expect(descs.every(({__assigned_ances:[ances]}) => ances === sourceRec)).toBe(true);  
       expect(list.slice(0, -1).every(({__assigned_desc:[desc]}) => desc === sourceRec)).toBe(true);
+      expect(destRec.__children).toContain(sourceRec);
+      expect(sourceRec.__destRecs).toContain(destRec);
+
+
+      const {origRec:newDestRec, path: newPath} = getRandomPath('TARGET', Sheets.TARGET.data, {column:'name'});
+
+      store(newPath, sourceRec, Sheets.SOURCE.data, Sheets);
+
+      const newDescs = flat(sourceRec.__children);
+      const {list:newList} = get(Sheets.SOURCE.data, {path: sourceRec.__path, withList:true});
+
+      expect(newDescs.every(({__assigned_ances:[ances]}) => ances === sourceRec)).toBe(true);  
+      expect(newList.slice(0, -1).every(({__assigned_desc:[desc]}) => desc === sourceRec)).toBe(true);
+      expect(destRec.__children).not.toContain(sourceRec);
+      expect(sourceRec.__destRecs).toContain(newDestRec);
+      expect(sourceRec.__destRecs).not.toContain(destRec);
+      expect(newDestRec.__children).toContain(sourceRec);
+
+
     } else {
       console.warn('not found proper source record, run test again.')
     }
