@@ -4,6 +4,7 @@
   "description": "| Statements | Branches | Functions | Lines | | -----------|----------|-----------|-------| | ![Statements](https://img.shields.io/badge/Coverage-99.31%25-brightgreen.svg \"Make me better!\") | ![Branches](https://img.shields.io/badge/Coverage-88.64%25-yellow.svg \"Make me better!\") | ![Functions](https://img.shields.io/badge/Coverage-100%25-brightgreen.svg \"Make me better!\") | ![Lines](https://img.shields.io/badge/Coverage-99.28%25-brightgreen.svg \"Make me better!\") |",
   "main": "dist/index.js",
   "scripts": {
+    "build": "webpack",
     "test": "jest --watchAll --coverage --verbose",
     "bench": "node ./benchmark",
     "make-badges": "jest-badges-readme",
@@ -32,7 +33,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "jest --coverage && node_modules/.bin/jest-badges-readme && git add 'README.md'",
+      "pre-commit": "npm run build && jest --coverage && node_modules/.bin/jest-badges-readme && git add 'README.md'",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
@@ -58,6 +59,7 @@
     "performance-now": "^2.1.0",
     "standard-version": "^8.0.0",
     "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
     "window": "^4.2.7"
   },
   "directories": {
