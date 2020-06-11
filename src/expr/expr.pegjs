@@ -1,9 +1,10 @@
 {
 	var parserInstance = this;
     
+    //  {func, Sheets, get, self, outer, vars}
   var {func, Sheets, vars} = parserInstance;
 
-  var {__VARS, __COL_ALIASES={}} = Sheets;
+  var {__VARS={}, __COL_ALIASES={}} = Sheets;
 
   var varsLocal = {...__VARS, ...vars};
 
@@ -15,7 +16,7 @@ VarExpr
     __VARS[varName] = ref.result;
     return ref;
   }
-  /RefExpr
+  / RefExpr
 
 RefExpr
   = res:(FuncExpr / ArithExpr) {
@@ -36,7 +37,6 @@ FuncExpr
 ArithExpr
   = Comp
   / ExprAlt
-  / __
 
 Comp
   = first:Factor _ "===" _ last:Factor {
@@ -47,13 +47,13 @@ Comp
       return {result: 0, code, desc}
     } else {
       const [result, code] = (first === last || Math.abs(first - last) < 1e-5 )
-        ? ['EQUAL', 'SUCC_TEST']
+        ? [true, 'SUCC_TEST']
         : [Math.abs(first - last), 'WARN_NOT_EQUAL']
       
       return {result, code}
     }
   }
-  / first: Factor _ comp:('>' / '<' / '>=' / '<=') _ last: Factor {
+  / first: Factor _ comp:('>=' / '<=' / '>' / '<') _ last: Factor {
 
     if (error.code){
       const {varName, code} = error;
@@ -78,10 +78,10 @@ Comp
 ExprAlt
   = head:(Term)? tail:(_ ("+" / "-") _ Term)* {
 
-    if (error.Var) {
+    if (error.code) {
       return {
         result: 0,
-        ...error.Var
+        ...error
       }
     } else {
       const result = tail.reduce(function(result, element) {
@@ -112,7 +112,7 @@ Factor
   / Integer
 
 Variable 'variable'
-  = _ lit:Literal {
+  = _ varName:Literal {
 
     if (varName in varsLocal){
       return varsLocal[varName];
@@ -120,7 +120,7 @@ Variable 'variable'
       // console.log('here');
       return varsLocal[__COL_ALIASES[varName]];
     } else {
-      error.Var = {code: 'WARN_VAR_NOT_FOUND', varName};
+      error = {code: 'WARN_VAR_NOT_FOUND', varName};
       return 0;
     }
   }
@@ -131,10 +131,14 @@ Literal 'literal'
   }
 
 Real 'real number'
-  = _ Integer ('.' Integer ([eE] [+-] Integer)?)? { return parseFloat(text());}
+  = _ Integer ('.' Integer ([eE] [+-]? Integer)?)? { 
+    return parseFloat(text());
+  }
 
 Integer "integer"
-  = _ [0-9]+ { return parseInt(text(), 10); }
+  = _ [0-9]+ {
+    return parseInt(text(), 10);
+  }
 
 _ "whitespace"
   = [ \t\n\r]*

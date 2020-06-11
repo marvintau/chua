@@ -1,3 +1,7 @@
+const add = require('../src/add');
+const get = require('../src/get');
+const del = require('../src/del');
+
 const {genName} = require('./util');
 
 let a = 1,
@@ -21,7 +25,6 @@ describe('function correctness', () => {
   const array = [];
 
   test('adding', () => {
-    const {add, get} = require('../dist');
     
     // add single
     add(array, getRec());
@@ -50,7 +53,6 @@ describe('function correctness', () => {
 
   test('getting', () => {
     const withList = true;
-    const {get} = require('../dist');
     
     let {record:recordIndex, list:listIndex} = get(array, {path: [0, 0, 0]});
     expect(recordIndex.a).toBe(15);
@@ -78,8 +80,6 @@ describe('function correctness', () => {
   })
 
   test('removing', () => {
-    const {get, del} = require('../dist');
-
     const beforeLast = array.slice(-2, -1)[0];
     del(array);
     expect(array.slice(-1)[0]).toBe(beforeLast);
@@ -92,32 +92,5 @@ describe('function correctness', () => {
     del(array, {num:3, atIndex:array.length - 3})
     expect(array.slice(-1)[0]).toBe(anotherLastThrid);
   })
-
-  test('flattening', () => {
-    const {trav, flat} = require('../dist');
-
-    const count = (array) => {
-      let counter = 0 ;
-      trav(array, () => counter ++);
-      return counter;
-    }
-
-    expect(count(array) === flat(array).length).toBe(true);
-  })
-
-  test('group', () => {
-    const {add, group} = require('../dist');
-
-    const groupArr = [];
-    add(groupArr, {a: 'a', b:'b'});
-    add(groupArr, {a: 'a', b:'c'});
-    add(groupArr, {a: 'bc', b:'c'});
-    add(groupArr, {a: 'bc', b:'d'});
-
-    expect(() => group(groupArr)).toThrow();
-    expect(group(groupArr, 'a').a.length).toBe(2);
-    expect(group(groupArr, ({a}) => a.length)['1'].length).toBe(2);
-  })
-
 })
 

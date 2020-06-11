@@ -1,7 +1,7 @@
 const get = require('../src/get');
 const trav = require('../src/trav');
 const flat = require('../src/flat');
-const assign = require('../src/assign-path');
+const store = require('../src/store');
 
 const {getRandomPath, getRandomRec, createRandomData} = require('./util');
 
@@ -15,7 +15,6 @@ describe('assign', () => {
     }
 
     const {origRec:destRec, path} = getRandomPath('TARGET', Sheets.TARGET.data, {column:'name'});
-    console.log(destRec, path);
 
     let attempts = 0, sourceRec;
     while(true){
@@ -29,9 +28,9 @@ describe('assign', () => {
         break;
       }
     }
-    console.log(sourceRec.name, 'source rec name');
+
     if (attempts > 0) {
-      assign(path, sourceRec, Sheets.SOURCE.data, Sheets);
+      store(path, sourceRec, Sheets.SOURCE.data, Sheets);
   
       const descs = flat(sourceRec.__children);
       expect(descs.every(({__assigned_ances:[ances]}) => ances === sourceRec)).toBe(true);

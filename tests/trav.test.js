@@ -28,7 +28,6 @@ test('trav', () => {
   trav(array);
   const flattened = flat(array);
   const [rec] = flattened.randomChoice();
-  console.log(rec, rec.__path, 'trav');
   const {record} = get(array, {path: rec.__path});
   expect(rec).toBe(record);
 
@@ -39,7 +38,7 @@ test('trav error', () => {
   try{
     trav([], 'NONO');
   } catch (error) {
-    console.log(error);
-    // expect(code).toBe('INVLAID_TRAV_ORDER');
+    // console.log(error);
+    expect(code).toBe('INVLAID_TRAV_ORDER');
   }
 })

@@ -8,7 +8,10 @@ const get = require('./get');
 const set = require('./set');
 const add = require('./add');
 const del = require('./del');
-const parse = require('./eval');
+const expr = require('./expr');
+
+const fetch = require('./fetch');
+const store = require('./store');
 
 module.exports = {
   add,
@@ -20,6 +23,8 @@ module.exports = {
   sort,
   flat,
   trav,
+  expr,
   group,
-  parse,
+  fetch,
+  store
 }

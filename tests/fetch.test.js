@@ -1,5 +1,5 @@
 const get = require('../src/get');
-const fetchPath = require('../src/fetch-path');
+const fetch = require('../src/fetch');
 
 const {getRandomRec, createRandomData, getRandomPath} = require('./util');
 
@@ -13,27 +13,27 @@ describe('fetch path', () => {
 
     
     const {origRec, path: origPath} = getRandomPath('TEST', data);
-    const {record:newRec} = fetchPath(origPath, Sheets);
+    const {record:newRec} = fetch(origPath, Sheets);
     expect(newRec).toBe(origRec);
 
     const {path: origNotFound} = getRandomPath('TEST', data, {undef:true});
-    const {record:notfoundRec} = fetchPath(origNotFound, Sheets);
+    const {record:notfoundRec} = fetch(origNotFound, Sheets);
     expect(notfoundRec).toBe(undefined);
 
     const {origRec:origAlterRec, path: origAlter, __PATH_ALIASES} = getRandomPath('TEST', data, {undef: true, replace: true});
 
-    const {record:alterRec, code:alterCode} = fetchPath(origAlter, {...Sheets, __PATH_ALIASES});
+    const {record:alterRec, code:alterCode} = fetch(origAlter, {...Sheets, __PATH_ALIASES});
     expect(alterRec).toBe(origAlterRec);
     expect(alterCode).toBe('INFO_ALTER_PATH');
   })
 
   test ('error', () => {
 
-    expect(fetchPath({})).toHaveProperty('code', 'FAIL_INVALID_PATH');
+    expect(fetch({})).toHaveProperty('code', 'FAIL_INVALID_PATH');
 
-    expect(fetchPath('asdasd', {})).toHaveProperty('code', 'FAIL_INVALID_PATH');
+    expect(fetch('asdasd', {})).toHaveProperty('code', 'FAIL_INVALID_PATH');
 
-    expect(fetchPath('NAME:nothing', {})).toHaveProperty('code', 'WARN_SHEET_NOT_FOUND');
+    expect(fetch('NAME:nothing', {})).toHaveProperty('code', 'WARN_SHEET_NOT_FOUND');
 
 
   })

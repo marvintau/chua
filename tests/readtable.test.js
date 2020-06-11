@@ -1,6 +1,8 @@
-const fs = require('fs').promises;
 const path = require('path');
+const fs = require('fs').promises;
 const XLSX = require('xlsx');
+
+const read = require('../src/read')
 
 let header = [
   ['项目', 'desc'],
@@ -41,8 +43,6 @@ function columnNameRemap(table, map){
 describe('reading', () => {
   test('reading', async () => {
 
-    const {read, flat} = require('../dist')
-
     const file = await fs.readFile(path.resolve(__dirname, 'CASHFLOW_STATEMENT_TEMPLATE.xlsx'));
     const sheet = readSingleSheet(file);
     const table = columnNameRemap(sheet, header);
@@ -52,6 +52,6 @@ describe('reading', () => {
     const level2 = readTable.map(({__children}) => __children).flat();
     expect(level2.map(({desc}) => desc).every(e => e.startsWith('#') && e.split('#').length === 3)).toBe(true);
 
-    console.log(flat(readTable).filter(({desc}) => !desc.startsWith('#')).length)
+    // console.log(flat(readTable).filter(({desc}) => !desc.startsWith('#')).length)
   })
 })

@@ -2,6 +2,11 @@ const fs = require('fs').promises;
 const path = require('path');
 const XLSX = require('xlsx');
 
+const casc = require('../src/casc');
+const get = require('../src/get');
+const flat = require('../src/flat');
+const trav = require('../src/trav');
+  
 function readSingleSheet(buffer, withHeader=true){
   const table = XLSX.read(buffer, {type:'buffer'});
   const firstSheet = table.Sheets[table.SheetNames[0]];  
@@ -74,14 +79,12 @@ describe('cascade table', () => {
     const sheet = readSingleSheet(file);
     const table = columnNameRemap(sheet, header);
 
-    const {casc, get} = require('../dist');
     const cascCol = 'ccode';
     const cascaded = casc(table, {cascCol});
     
     expect(cascaded.map(({ccode}) => ccode.length).every(e => e === 4)).toBe(true);
 
     // console.log(table[0].__children, 'yes');
-    const {flat, trav} = require('../dist');
     trav(cascaded);
     const flattened = flat(table);
     const paths = flattened.map(({__path})=>__path).filter(e => e.length > 3);

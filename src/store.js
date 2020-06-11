@@ -2,7 +2,7 @@
 const add = require('./add');
 const get = require('./get');
 const trav = require('./trav');
-const fetchPath = require('./fetch-path');
+const fetch = require('./fetch');
 
 const assignDescendants = (sourceRec, options) => {
   sourceRec.__assigned_ances = [];
@@ -62,7 +62,7 @@ const assignRec = (sourceRec, destRec) => {
 
 const assignSheet = (path, sourceRec, sourceSheet, Sheets, {ancestorOptions, descendantOptions}={}) => {
 
-  const {record:destRec} = fetchPath(path, Sheets);
+  const {record:destRec} = fetch(path, Sheets);
 
   trav(sourceSheet, (rec) => {
     const {__assigned_ances: ances = [], __assigned_desc: desc = []} = rec;
