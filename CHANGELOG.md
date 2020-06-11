@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.21](https://github.com/marvintau/tree/compare/v1.0.20...v1.0.21) (2020-06-11)
+
+
+### Bug Fixes
+
+* latest change ([03707ec](https://github.com/marvintau/tree/commit/03707eccd314cea2d59c15daaf8c0494085d284c))
+
 ### [1.0.20](https://github.com/marvintau/tree/compare/v1.0.19...v1.0.20) (2020-06-11)
 
 
