@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.20](https://github.com/marvintau/tree/compare/v1.0.19...v1.0.20) (2020-06-11)
+
+
+### Bug Fixes
+
+* enhanced parsing functions ([84682c5](https://github.com/marvintau/tree/commit/84682c575a592dd3709caf0a51102e4cbb716bf9))
+* updated assign path with proper cleaning operation ([ac9b126](https://github.com/marvintau/tree/commit/ac9b126b6537979b5275bd73985468f207da3d8f))
+
 ### [1.0.19](https://github.com/marvintau/tree/compare/v1.0.18...v1.0.19) (2020-06-11)
 
 
