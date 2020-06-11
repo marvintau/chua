@@ -6,7 +6,14 @@
   "scripts": {
     "test": "jest --watchAll --coverage --verbose",
     "bench": "node ./benchmark",
-    "make-badges": "jest-badges-readme"
+    "make-badges": "jest-badges-readme",
+    "release": "standard-version",
+    "publish-package": "git push --follow-tags origin master && npm publish --access public"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   },
   "jest": {
     "coverageReporters": [
@@ -17,7 +24,7 @@
     "transform": {
       "^.+\\.pegjs$": "pegjs-jest"
     },
-    "testPathIgnorePatterns" : [
+    "testPathIgnorePatterns": [
       "<rootDir>/dist/",
       "<rootDir>/node_modules/"
     ],
@@ -25,7 +32,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "jest && node_modules/.bin/jest-badges-readme && git add 'README.md'"
+      "pre-commit": "jest --coverage && node_modules/.bin/jest-badges-readme && git add 'README.md'",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "keywords": [],
@@ -38,6 +46,8 @@
     "@olavoparno/jest-badges-readme": "^1.4.1",
     "@wordpress/jest-preset-default": "^6.1.0",
     "benchmark": "^2.1.4",
+    "commitlint": "^8.3.5",
+    "cz-conventional-changelog": "^3.2.0",
     "husky": "^4.2.3",
     "jest": "^25.2.4",
     "microtime": "^3.0.0",
@@ -45,6 +55,7 @@
     "pegjs-jest": "0.0.2",
     "pegjs-loader": "^0.5.6",
     "performance-now": "^2.1.0",
+    "standard-version": "^8.0.0",
     "webpack": "^4.42.1",
     "window": "^4.2.7"
   },
