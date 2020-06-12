@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.30](https://github.com/marvintau/tree/compare/v1.0.29...v1.0.30) (2020-06-12)
+
+
+### Bug Fixes
+
+* added cond store support of creating random data ([e26fa95](https://github.com/marvintau/tree/commit/e26fa957d05acbab2b9e5882b720123b6f60d50e))
+
 ### [1.0.29](https://github.com/marvintau/tree/compare/v1.0.28...v1.0.29) (2020-06-12)
 
 
