@@ -38,7 +38,7 @@ const isInteger = num =>
   typeof num === 'number' && (num % 1) === 0;
 
 const choice = function(list){
-  const index = Math.floor(Math.random() * this.length);
+  const index = Math.floor(Math.random() * list.length);
   return [list[index], index];
 }
 
@@ -126,7 +126,7 @@ const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.5, schema, referre
 
   for (let i = 0; i < recs; i++){
     
-    const rec = getRandomRec(data, {addProb, stopProb, schema}) ;
+    const rec = getRandomRec(data, {addProb, stopProb}) ;
     
     let newRec = {};
     if (schema === undefined){
@@ -144,6 +144,7 @@ const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.5, schema, referre
     }
 
     if (rec !== data) {
+      console.log(data, rec, 'error prone');
       if(rec.__children === undefined) {
         rec.__children = [];
       }
