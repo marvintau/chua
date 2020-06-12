@@ -62,19 +62,54 @@ const getRandomRec = (array, {addProb=-1, stopProb=-1}={}) => {
   }
 }
 
-const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.5}={}) => {
+const createRandomData = (name, {recs=1000, addProb=0.5, stopProb=0.5, schema, referredTable}={}) => {
 
-  const data = []
+  const data = [];
+
+  const schemaFunc = {
+    integer(){
+      return Math.floor(Math.random() * 1000)
+    },
+    number(){
+      return Math.random() * 1000
+    },
+    string(){
+      return Math.random().toString(35).slice(2, 9)
+    },
+    boolean(){
+      return Math.random() > 0.5
+    },
+    fetch(){
+      const {name: referredName, data: referredData, indexColumn:column} = referredTable;
+      const {origRec, path} = getRandomPath(referredName, referredData, {column});
+      return { type:'ref-fetch', path, expr:Object.keys(origRec)[0] }
+    },
+    store(){
+      return { type: 'ref-store', path: '', }
+    },
+    condStore(){
+      return { type: 'ref-cond-store', cond: '', path: ''}
+    }
+  }
 
   for (let i = 0; i < recs; i++){
     
-    const rec = getRandomRec(data, {addProb, stopProb}) ;
+    const rec = getRandomRec(data, {addProb, stopProb, schema}) ;
     
-    const newRec = {
-      num: Math.random() * 1000,
-      name:'S' + Math.random().toString(31).slice(2, -4).toUpperCase(),
-      calc:{result:Math.random() * 1000, code:'NORM'},
-    };
+    let newRec = {};
+    if (schema === undefined){
+      newRec = {
+        num: Math.random() * 1000,
+        name:'S' + Math.random().toString(31).slice(2, -4).toUpperCase(),
+        calc:{result:Math.random() * 1000, code:'NORM'},
+      };
+    } else {
+      for (let key in schema) {
+        newRec[key] = schemaFunc[schema[key]]
+          ? schemaFunc[schema[key]]()
+          : undefined
+      }
+    }
 
     if (rec !== data) {
       if(rec.__children === undefined) {
