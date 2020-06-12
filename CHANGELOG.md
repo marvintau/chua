@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.24](https://github.com/marvintau/tree/compare/v1.0.23...v1.0.24) (2020-06-12)
+
+
+### Bug Fixes
+
+* terrible mistake of random choice ([75ef2e4](https://github.com/marvintau/tree/commit/75ef2e452050885a94db8fa5b0730bc4c166d571))
+* terrible mistake of random choice ([d947a3d](https://github.com/marvintau/tree/commit/d947a3d17dd0cd7f15283701acda924e7ff3633c))
+* updated fetch rec ([2807453](https://github.com/marvintau/tree/commit/2807453a74ab67d532efb9bfdbf54b49f04d1e2e))
+
 ### [1.0.23](https://github.com/marvintau/tree/compare/v1.0.22...v1.0.23) (2020-06-12)
 
 
