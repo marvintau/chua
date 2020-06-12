@@ -62,7 +62,39 @@ const getRandomRec = (array, {addProb=-1, stopProb=-1}={}) => {
   }
 }
 
-const createRandomData = (name, {recs=1000, addProb=0.5, stopProb=0.5, schema, referredTable}={}) => {
+const pathFromList = (name, list, {column='name', undef=false, replace=false}) => {
+  const segs = list.map(({[column]:col}) => col);
+
+  const repString = 'HAHA!@#!@#';
+  const __PATH_ALIASES = {};
+  if (undef) {
+    const [_, randomIndex] = choice(segs);
+    const [deleted] = segs.splice(randomIndex, 1, repString)
+    if (replace) {
+      __PATH_ALIASES[repString] = [deleted];
+    }
+  }
+
+  const path = `${name}:${segs.join('/')}`;
+  return {
+    path,
+    __PATH_ALIASES
+  }
+}
+
+const getRandomPath = (name, array, {column='name', undef=false, replace=false}={}) => {
+  const rec = getRandomRec(array);
+  const {__path} = rec;
+
+  const {list} = get(array, {path:__path, withList:true});
+
+  const {path, __PATH_ALIASES} = pathFromList(name, list, {column, undef, replace});
+
+  return { origRec: rec, path, __PATH_ALIASES }
+}
+
+
+const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.5, schema, referredTable}={}) => {
 
   const data = [];
 
@@ -124,38 +156,6 @@ const createRandomData = (name, {recs=1000, addProb=0.5, stopProb=0.5, schema, r
   trav(data);
   return data;
 }
-
-const pathFromList = (name, list, {column='name', undef=false, replace=false}) => {
-  const segs = list.map(({[column]:col}) => col);
-
-  const repString = 'HAHA!@#!@#';
-  const __PATH_ALIASES = {};
-  if (undef) {
-    const [_, randomIndex] = choice(segs);
-    const [deleted] = segs.splice(randomIndex, 1, repString)
-    if (replace) {
-      __PATH_ALIASES[repString] = [deleted];
-    }
-  }
-
-  const path = `${name}:${segs.join('/')}`;
-  return {
-    path,
-    __PATH_ALIASES
-  }
-}
-
-const getRandomPath = (name, array, {column='name', undef=false, replace=false}={}) => {
-  const rec = getRandomRec(array);
-  const {__path} = rec;
-
-  const {list} = get(array, {path:__path, withList:true});
-
-  const {path, __PATH_ALIASES} = pathFromList(name, list, {column, undef, replace});
-
-  return { origRec: rec, path, __PATH_ALIASES }
-}
-
 
 function genName(vowelMinLen=4, vowelMaxLen=8, {end=true, capital=true}={}){
 
