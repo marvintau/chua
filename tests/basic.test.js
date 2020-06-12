@@ -2,7 +2,7 @@ const add = require('../src/add');
 const get = require('../src/get');
 const del = require('../src/del');
 
-const {genName} = require('./util');
+const {genName} = require('../src/util');
 
 let a = 1,
     b = a + 1;

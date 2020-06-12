@@ -1,5 +1,4 @@
 
-const add = require('./add');
 const get = require('./get');
 const trav = require('./trav');
 const fetch = require('./fetch');
@@ -61,7 +60,7 @@ const assignRec = (sourceRec, destRec) => {
     if (destRec.__children === undefined) {
       destRec.__children = [];
     }
-    add(destRec.__children, sourceRec);
+    destRec.__children.push(sourceRec);
 
     if (sourceRec.__destRecs === undefined) {
       sourceRec.__destRecs = [];
@@ -90,7 +89,6 @@ const assignSheet = (path, sourceRec, sourceSheet, Sheets) => {
   assignAncestors(sourceSheet, sourceRec);
   assignDescendants(sourceRec);
   assignRec(sourceRec, destRec);
-
 }
 
 module.exports = assignSheet;

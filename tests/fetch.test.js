@@ -1,7 +1,7 @@
 const get = require('../src/get');
 const fetch = require('../src/fetch');
 
-const {getRandomRec, createRandomData, getRandomPath} = require('./util');
+const {getRandomRec, createRandomData, getRandomPath} = require('../src/util');
 
 describe('fetch path', () => {
   test('normal && not found && alternative', () => {

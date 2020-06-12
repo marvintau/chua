@@ -1,7 +1,7 @@
 const trav = require('../src/trav')
 const flat = require('../src/flat')
 
-const {createRandomData} = require('./util');
+const {createRandomData} = require('../src/util');
 
 test('flattening', () => {
 

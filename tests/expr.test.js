@@ -1,5 +1,5 @@
 const expr = require('../src/expr')
-const {createRandomData} = require('./util')
+const {createRandomData} = require('../src/util')
 
 describe('expr suites', () => {
 

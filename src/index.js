@@ -13,6 +13,15 @@ const expr = require('./expr');
 const fetch = require('./fetch');
 const store = require('./store');
 
+const {
+  createRandomData,
+  getRandomRec,
+  getRandomPath,
+  genName,
+  choice
+} = require('./util');
+
+
 module.exports = {
   add,
   del,
@@ -26,5 +35,12 @@ module.exports = {
   expr,
   group,
   fetch,
-  store
+  store,
+  utils: {
+    createRandomData,
+    getRandomRec,
+    getRandomPath,
+    genName,
+    choice  
+  }
 }

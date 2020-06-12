@@ -1,4 +1,4 @@
-const {genName} = require('./util');
+const {genName, choice} = require('../src/util');
 
 const flat = require('../src/flat');
 const trav = require('../src/trav');
@@ -27,7 +27,7 @@ test('trav', () => {
 
   trav(array);
   const flattened = flat(array);
-  const [rec] = flattened.randomChoice();
+  const [rec] = choice(flattened);
   const {record} = get(array, {path: rec.__path});
   expect(rec).toBe(record);
 

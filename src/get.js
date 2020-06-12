@@ -1,4 +1,5 @@
-const {isInteger} = require('./util');
+const isInteger = num =>
+  typeof num === 'number' && (num % 1) === 0;
 
 // get a record according to the path reprensented in index;
 // 通过一个index构成的路径来寻找记录
