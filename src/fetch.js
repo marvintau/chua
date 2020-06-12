@@ -36,7 +36,7 @@ function fetchPath(expr, Sheets={}) {
 
   const {data, indexColumn} = Sheets[name];
   const path = body.split('/').map(elem => elem.trim());
-
+  
   let {record, siblings} = get(data, {path, indexColumn});
 
   if (record !== undefined) {
@@ -48,7 +48,8 @@ function fetchPath(expr, Sheets={}) {
     if (record !== undefined) {
       return {record, suggs, code};
     } else {
-      return {record, suggs:[], code: 'WARN_RECORD_NOT_FOUND'}
+      const suggs = getSuggs(data, indexColumn);
+      return {record, suggs, code: 'WARN_RECORD_NOT_FOUND'}
     }
   }
 }
