@@ -17,7 +17,6 @@ module.exports = {
   },
 
   SUMSUB(rec, fieldName='ref'){
-    console.log("SUMSUB", fieldName);
     const {__children} = rec;
 
     if(__children !== undefined){

@@ -5,7 +5,10 @@ const fetch = require('./fetch');
 
 const addUndo = (list, rec, {undo=false}={}) => {
   if (undo) {
-    list.splice(list.findIndex(r => r === rec), 1);
+    const index = list.findIndex(r => r === rec);
+    if (index !== -1){
+      list.splice(index, 1);
+    }
   } else {
     list.push(rec);
   }
