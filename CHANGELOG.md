@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.23](https://github.com/marvintau/tree/compare/v1.0.22...v1.0.23) (2020-06-12)
+
+
+### Bug Fixes
+
+* extended create random data ([f784dbd](https://github.com/marvintau/tree/commit/f784dbd49684fd1b1a5594a03faeb061777cf0ca))
+* updated argument position of createRandomData ([e0140d3](https://github.com/marvintau/tree/commit/e0140d3eaf2c7fedbce8486b37d09fad2663b063))
+
 ### [1.0.22](https://github.com/marvintau/tree/compare/v1.0.21...v1.0.22) (2020-06-12)
 
 
