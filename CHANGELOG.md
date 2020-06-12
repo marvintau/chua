@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.26](https://github.com/marvintau/tree/compare/v1.0.25...v1.0.26) (2020-06-12)
+
+
+### Bug Fixes
+
+* fixed fetch path ([1cfbb24](https://github.com/marvintau/tree/commit/1cfbb245d777e2ff75bfe2567918f01072820f7e))
+
 ### [1.0.25](https://github.com/marvintau/tree/compare/v1.0.24...v1.0.25) (2020-06-12)
 
 
