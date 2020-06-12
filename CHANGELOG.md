@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.27](https://github.com/marvintau/tree/compare/v1.0.26...v1.0.27) (2020-06-12)
+
+
+### Bug Fixes
+
+* test sumsub ([75f40da](https://github.com/marvintau/tree/commit/75f40daedb40f6edeb336cb0ae62fffe55e6c7be))
+
 ### [1.0.26](https://github.com/marvintau/tree/compare/v1.0.25...v1.0.26) (2020-06-12)
 
 
