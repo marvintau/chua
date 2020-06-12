@@ -144,7 +144,6 @@ const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.5, schema, referre
     }
 
     if (rec !== data) {
-      console.log(data, rec, 'error prone');
       if(rec.__children === undefined) {
         rec.__children = [];
       }
