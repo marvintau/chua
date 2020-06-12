@@ -86,12 +86,13 @@ const assignSheet = (path, sourceRec, sourceSheet, Sheets) => {
   }  
 
   const {record:destRec} = fetch(path, Sheets);
-
+  if (path.length > 0){
+    assignAncestors(sourceSheet, sourceRec);
+    assignDescendants(sourceRec);
+    assignRec(sourceRec, destRec);  
+  }
   // Note the sequence.
   // WHen assigning the ancestors, we have traversed the whole table
-  assignAncestors(sourceSheet, sourceRec);
-  assignDescendants(sourceRec);
-  assignRec(sourceRec, destRec);
 }
 
 module.exports = assignSheet;
