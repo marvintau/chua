@@ -36,7 +36,6 @@ function fetchPath(expr, Sheets={}) {
 
   const {data, indexColumn} = Sheets[name];
   const path = body.split('/').map(elem => elem.trim());
-  console.log(body, path, 'beofre get');
   let {record, siblings} = get(data, {path, indexColumn});
 
   if (record === undefined){

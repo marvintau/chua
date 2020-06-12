@@ -17,6 +17,7 @@ module.exports = {
   },
 
   SUMSUB(rec, fieldName='ref'){
+    console.log("SUMSUB", fieldName);
     const {__children} = rec;
 
     if(__children !== undefined){
@@ -29,7 +30,7 @@ module.exports = {
   },
   SUB(rec, index, fieldName='ref'){
     if (rec.__children && rec.__children.length > 0){
-      const {result, code} = rec.__children[0][fieldName];
+      const {result, code} = rec.__children[index][fieldName];
       return {result, code};
     } else {
       return {result: 0, code: 'WARN'};
