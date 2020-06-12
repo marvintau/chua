@@ -120,7 +120,7 @@ const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.5, schema, referre
       return { type: 'ref-store', path: '', }
     },
     condStore(){
-      return { type: 'ref-cond-store', cond: '', path: ''}
+      return { type: 'ref-cond-store', cases:[{cond: '', path: ''}]}
     }
   }
 
