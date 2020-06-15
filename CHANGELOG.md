@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.31](https://github.com/marvintau/tree/compare/v1.0.30...v1.0.31) (2020-06-15)
+
+
+### Bug Fixes
+
+* added support for plain data in SUMSUB ([b1b0b04](https://github.com/marvintau/tree/commit/b1b0b043533d7aa26e7edaf173a6a6b93c72bde0))
+
 ### [1.0.30](https://github.com/marvintau/tree/compare/v1.0.29...v1.0.30) (2020-06-12)
 
 
