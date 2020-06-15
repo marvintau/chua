@@ -1,12 +1,18 @@
 
 function sumCode(children, fieldName='ref'){
-  const result = children.some(({[fieldName]:{code}}) => code !== 'NORM') ? 'WARN' : 'NORM';
+  const result = children.some(({[fieldName]:col}) => col && col.code && col.code !== 'NORM') ? 'WARN' : 'NORM';
   return result;
 }
 
 function sumResult(children, fieldName='ref'){
   const result = children
-    .reduce((acc, {[fieldName]:{result}}) => acc + (!isNaN(result) ? result: 0), 0);
+    .reduce((acc, {[fieldName]:col}) => {
+      if (typeof col === 'number') {
+        return acc + col;
+      } else if (col.result && typeof col.result === 'number') {
+        return acc + col.result;
+      } else return 0;
+    }, 0);
   
     return parseFloat(result.toFixed(2));
 }
