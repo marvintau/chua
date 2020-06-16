@@ -7,6 +7,7 @@ function sumCode(children, fieldName='ref'){
 function sumResult(children, fieldName='ref'){
   const result = children
     .reduce((acc, {[fieldName]:col}) => {
+      console.log('col', fieldName, col);
       if (col === undefined) {
         return acc
       } else if (typeof col === 'number') {
