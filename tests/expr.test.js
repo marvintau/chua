@@ -93,9 +93,9 @@ describe('expr suites', () => {
       const vars = Sheets.TEST.data[0];
       const list = vars.__children.map(({calc:{result}}) => result);
       const first = vars.__children[0].calc.result;
-      expect(expr('=SUMSUB(calc)', {vars}).result).toBeCloseTo(list.reduce((acc, e) => acc + e, 0));
-      expect(expr('=NONE(whatever)', {vars}).result).toBe(undefined);
-      expect(expr('=SUB(0, calc)', {vars}).result).toBe(first);
+      expect(expr('=SUMSUB()', {vars, colKey:'calc'}).result).toBeCloseTo(list.reduce((acc, e) => acc + e, 0));
+      expect(expr('=NONE()', {vars}).result).toBe(undefined);
+      expect(expr('=SUB(0)', {vars, colKey:'calc'}).result).toBe(first);
     })
   })
 })

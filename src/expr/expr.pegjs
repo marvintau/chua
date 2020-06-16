@@ -2,7 +2,7 @@
 	var parserInstance = this;
     
     //  {func, Sheets, get, self, outer, vars}
-  var {func, Sheets, vars} = parserInstance;
+  var {func, Sheets, vars, colKey} = parserInstance;
 
   var {__VARS={}, __COL_ALIASES={}} = Sheets;
 
@@ -24,11 +24,13 @@ RefExpr
   }
 
 FuncExpr
-  = "=" funcName:Literal _ "(" _  argsText: (LiteralTerm _ ( ',' _ LiteralTerm )*) _ ")" {
-    const args = argsText.flat().map((elem) => Array.isArray(elem) ? elem.slice(-1)[0] : elem);
+  = "=" funcName:Literal _ "(" _  argsText: (LiteralTerm _ ( ',' _ LiteralTerm )*)? _ ")" {
+    const args = argsText === null
+    ? [] 
+    : argsText.flat().map((elem) => Array.isArray(elem) ? elem.slice(-1)[0] : elem);
+
     if (funcName in func){
-      // console.log(vars, args, 'res')
-      const res = func[funcName](vars, ...args);
+      const res = func[funcName](vars, colKey, ...args);
       return res;
     } else {
       return { result: 0, code: 'WARN_UNDEFINED_FUNC'}

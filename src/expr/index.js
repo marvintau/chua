@@ -1,8 +1,8 @@
 const func = require('./funcs');
 const parser = require("./expr.pegjs")
 
-module.exports = (expr, {Sheets={}, vars={}}={}) => {
-  Object.assign(parser, {func, Sheets, vars});
+module.exports = (expr, {Sheets={}, vars={}, colKey}={}) => {
+  Object.assign(parser, {func, Sheets, vars, colKey});
   try {
     return parser.parse(expr);
   } catch (error) {

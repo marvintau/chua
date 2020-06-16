@@ -33,7 +33,7 @@ module.exports = {
       return {code: 'NORM', result: 0};
     }
   },
-  SUB(rec, index, fieldName='ref'){
+  SUB(rec, fieldName='ref', index){
     if (rec.__children && rec.__children.length > 0){
       const {result, code} = rec.__children[index][fieldName];
       return {result, code};
