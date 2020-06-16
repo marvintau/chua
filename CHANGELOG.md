@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.32](https://github.com/marvintau/tree/compare/v1.0.31...v1.0.32) (2020-06-16)
+
+
+### Bug Fixes
+
+* add support for passing col key to parser ([4a8cd0e](https://github.com/marvintau/tree/commit/4a8cd0e6a9092519aa7fc97f6191778d4c4636ac))
+
 ### [1.0.31](https://github.com/marvintau/tree/compare/v1.0.30...v1.0.31) (2020-06-15)
 
 
