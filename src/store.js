@@ -2,6 +2,7 @@
 const get = require('./get');
 const trav = require('./trav');
 const fetch = require('./fetch');
+const evalExpr = require('./expr');
 
 const addUndo = (list, rec, {undo=false}={}) => {
   if (undo) {
