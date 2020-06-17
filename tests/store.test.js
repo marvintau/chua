@@ -31,7 +31,7 @@ describe('assign', () => {
 
       const {origRec:destRec, path} = getRandomPath('TARGET', Sheets.TARGET.data, {column:'name'});
 
-      store(path, sourceRec, Sheets.SOURCE.data, Sheets);
+      store([{path}], sourceRec, Sheets.SOURCE.data, Sheets);
   
       const descs = flat(sourceRec.__children);
       const {list:ancesList} = get(Sheets.SOURCE.data, {path: sourceRec.__path, withList:true});
@@ -46,10 +46,8 @@ describe('assign', () => {
     
       const {__path:newPathSegs} = newDestRec;
       const {record: newDestRecRec} = get(Sheets.TARGET.data, {path: newPathSegs})
-      // console.log(newDestRecRec, 'newDestRecRec');
 
-      // console.log(newDestRec, newPath);
-      store(newPath, sourceRec, Sheets.SOURCE.data, Sheets);
+      store([{path: newPath}], sourceRec, Sheets.SOURCE.data, Sheets);
 
       const newDescs = flat(sourceRec.__children);
       const {list:newAncesList} = get(Sheets.SOURCE.data, {path: sourceRec.__path, withList:true});

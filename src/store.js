@@ -95,4 +95,28 @@ const assignSheet = (path, sourceRec, sourceSheet, Sheets) => {
   // WHen assigning the ancestors, we have traversed the whole table
 }
 
-module.exports = assignSheet;
+const condAssign = (cases, rec, sourceSheet, Sheets) => {
+
+  rec.__cands = cases.length === 1
+  ? [{result: true, path:cases[0].path}]
+  : cases.map(({cond, path}) => {
+      const {result} = evalExpr(cond, {Sheets, vars:rec});
+      return {result, path};
+    }).filter(({result}) => result);
+  
+  const destPath = rec.__cands.length === 1
+  ? rec.__cands[0].path
+  : 'INVALID';
+  if (rec.__applyToSub){
+    if (rec.__children === undefined) {
+      assignSheet('INVALID', rec, sourceSheet, Sheets);
+    } else for (let sub of rec.__children){
+      assignSheet(destPath, sub, sourceSheet, Sheets);
+    }
+  } else {
+    assignSheet(destPath, rec, sourceSheet, Sheets);
+  }
+}
+
+
+module.exports = condAssign;
