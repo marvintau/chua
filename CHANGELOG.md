@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.35](https://github.com/marvintau/tree/compare/v1.0.34...v1.0.35) (2020-06-17)
+
+
+### Bug Fixes
+
+* merged cond assign into chua ([dc27b39](https://github.com/marvintau/tree/commit/dc27b3924ec2de8e335798f2280e9b3041ff8370))
+
 ### [1.0.34](https://github.com/marvintau/tree/compare/v1.0.33...v1.0.34) (2020-06-16)
 
 
