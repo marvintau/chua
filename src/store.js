@@ -1,6 +1,7 @@
 
 const get = require('./get');
 const trav = require('./trav');
+const flat = require('./flat');
 const fetch = require('./fetch');
 const evalExpr = require('./expr');
 
@@ -99,26 +100,39 @@ const assignSheet = (path, sourceRec, sourceSheet, Sheets) => {
   return {};
 }
 
-const condAssign = (cases, rec, sourceSheet, Sheets) => {
-
-  rec.__cands = cases.length === 1
+const getCands = (rec, cases, Sheets) => {
+  return cases.length === 1
   ? [{result: true, path:cases[0].path}]
   : cases.map(({cond, path}) => {
-      const {result} = evalExpr(cond, {Sheets, vars:rec});
-      return {result, path};
-    }).filter(({result}) => result);
+    const {result} = evalExpr(cond, {Sheets, vars:rec});
+    return {result, path};
+  }).filter(({result}) => result);
+}
+
+const condAssign = (cases, rec, sourceSheet, Sheets) => {
+
+  if (rec.__applyToSub === undefined) {
+    rec.__cands = getCands(rec, cases, Sheets);
+
+    const destPath = rec.__cands.length === 1
+    ? rec.__cands[0].path
+    : 'INVALID';
   
-  const destPath = rec.__cands.length === 1
-  ? rec.__cands[0].path
-  : 'INVALID';
-  if (rec.__applyToSub){
-    if (rec.__children === undefined) {
-      return assignSheet('INVALID', rec, sourceSheet, Sheets);
-    } else for (let sub of rec.__children){
-      return assignSheet(destPath, sub, sourceSheet, Sheets);
-    }
-  } else {
     return assignSheet(destPath, rec, sourceSheet, Sheets);
+  } else {
+
+    const flattened = flat(rec.__children).filter(({__children:ch}) => ch === undefined || ch.length === 0);
+
+    if (rec.__children) for (let sub of flattened) {
+      sub.__cands = getCands(sub, cases, Sheets);
+
+      const destPath = sub.__cands.length === 1
+      ? sub.__cands[0].path
+      : 'INVALID';
+
+      assignSheet(destPath, sub, sourceSheet, Sheets);
+    }
+    return {};
   }
 }
 
