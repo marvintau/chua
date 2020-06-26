@@ -16,13 +16,15 @@ const trav = (array, func= e=>e, dir='PRE', path=[]) => {
     const rec = array[i];
     const currPath = path.concat(i);
 
-    Object.assign(rec, {__path: currPath});
-
-    (dir === 'PRE') && func(rec, currPath);
-    if (Array.isArray(rec.__children)){
-      trav(rec.__children, func, dir, currPath);
+    if (rec) {
+      Object.assign(rec, {__path: currPath});
+      
+      (dir === 'PRE') && func(rec, currPath);
+      if (Array.isArray(rec.__children)){
+        trav(rec.__children, func, dir, currPath);
+      }
+      (dir === 'POST') && func(rec, currPath);
     }
-    (dir === 'POST') && func(rec, currPath);
   }
 }
 
