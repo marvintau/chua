@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.39](https://github.com/marvintau/tree/compare/v1.0.38...v1.0.39) (2020-06-26)
+
+
+### Bug Fixes
+
+* trav: handle undefined/null ([ca91efb](https://github.com/marvintau/tree/commit/ca91efb295db3a42111a55d1758ec15d658c3663))
+
 ### [1.0.38](https://github.com/marvintau/tree/compare/v1.0.37...v1.0.38) (2020-06-18)
 
 
