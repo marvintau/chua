@@ -5,6 +5,22 @@ const flat = require('./flat');
 const fetch = require('./fetch');
 const evalExpr = require('./expr');
 
+const parseApplySpec = (rec, applySpec) => {
+  if(rec.__children === undefined) {
+    return [];
+  } else if(applySpec.match(/^\d+$/)) {
+    const level = parseInt(applySpec);
+    return flat(rec.__children).filter(({__path}) => __path.length === rec.__path.length + level);
+  } else {
+    const [name, value] = applySpec.split(':');
+    if (value !== undefined) {
+      return flat(rec.__children).filter(({[name]:prop}) => prop === value);
+    } else {
+      return flat(rec.__children).filter(({[name]:prop}) => prop);
+    }
+  }
+}
+
 const addUndo = (list, rec, {undo=false}={}) => {
   if (undo) {
     const index = list.findIndex(r => r === rec);
@@ -111,7 +127,7 @@ const getCands = (rec, cases, Sheets) => {
 
 const condAssign = (cases, rec, sourceSheet, Sheets) => {
 
-  if (rec.__applyToSub === undefined) {
+  if (rec.__apply_spec === undefined) {
     rec.__cands = getCands(rec, cases, Sheets);
 
     const destPath = rec.__cands.length === 1
@@ -121,9 +137,9 @@ const condAssign = (cases, rec, sourceSheet, Sheets) => {
     return assignSheet(destPath, rec, sourceSheet, Sheets);
   } else {
 
-    const flattened = flat(rec.__children).filter(({__children:ch}) => ch === undefined || ch.length === 0);
+    const finalyApplyTo = parseApplySpec(rec.__apply_spec, rec);
 
-    if (rec.__children) for (let sub of flattened) {
+    for (let sub of finalyApplyTo) {
       sub.__cands = getCands(sub, cases, Sheets);
 
       const destPath = sub.__cands.length === 1

@@ -1,6 +1,6 @@
 | 语句覆盖率 | 分支覆盖率 | 函数覆盖率 | 代码行覆盖率 |
 | -----------|----------|-----------|-------|
-| ![Statements](https://img.shields.io/badge/Coverage-76.07%25-red.svg) | ![Branches](https://img.shields.io/badge/Coverage-65.95%25-red.svg) | ![Functions](https://img.shields.io/badge/Coverage-73.47%25-red.svg) | ![Lines](https://img.shields.io/badge/Coverage-76.55%25-red.svg) |
+| ![Statements](https://img.shields.io/badge/Coverage-75.27%25-red.svg) | ![Branches](https://img.shields.io/badge/Coverage-65.77%25-red.svg) | ![Functions](https://img.shields.io/badge/Coverage-70.67%25-red.svg) | ![Lines](https://img.shields.io/badge/Coverage-75.92%25-red.svg) |
 
 Chuā - 欻
 =========
