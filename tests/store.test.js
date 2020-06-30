@@ -39,7 +39,7 @@ describe('assign', () => {
       expect(descs.every(({__assigned_ances:[ances]}) => ances === sourceRec)).toBe(true);  
       expect(ancesList.slice(0, -1).every(({__assigned_desc:[desc]}) => desc === sourceRec)).toBe(true);
       expect(destRec.__children).toContain(sourceRec);
-      expect(sourceRec.__destRecs).toContain(destRec);
+      expect(sourceRec.__dest_map.has(destRec)).toBe(true);
 
 
       const {origRec:newDestRec, path: newPath} = getRandomPath('TARGET', Sheets.TARGET.data, {column:'name'});
