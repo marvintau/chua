@@ -138,7 +138,7 @@ const condAssign = (cases, rec, sourceSheet, Sheets) => {
   } else {
 
     const finalyApplyTo = parseApplySpec(rec.__apply_spec, rec);
-
+    // console.log(finalyApplyTo, rec.__apply_spec, 'finallyAppliedTo');
     for (let sub of finalyApplyTo) {
       sub.__cands = getCands(sub, cases, Sheets);
 
