@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.41](https://github.com/marvintau/tree/compare/v1.0.39...v1.0.41) (2020-06-30)
+
+
+### Bug Fixes
+
+* reformed applySpec ([2092b5c](https://github.com/marvintau/tree/commit/2092b5ca0fa2d290d70610893e1f064916f510f7))
+* testing store apply spec ([9950415](https://github.com/marvintau/tree/commit/99504155b49d54971b8996b1d1d047f64b2e74c5))
+
 ### [1.0.40](https://github.com/marvintau/tree/compare/v1.0.39...v1.0.40) (2020-06-30)
 
 
