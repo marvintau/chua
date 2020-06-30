@@ -5,7 +5,7 @@ const flat = require('./flat');
 const fetch = require('./fetch');
 const evalExpr = require('./expr');
 
-const parseApplySpec = (rec, applySpec) => {
+const getAppliedRecs = (rec, applySpec) => {
   if(rec.__children === undefined) {
     return [];
   } else if(applySpec.match(/^\d+$/)) {
@@ -16,6 +16,7 @@ const parseApplySpec = (rec, applySpec) => {
     if (value !== undefined) {
       return flat(rec.__children).filter(({[name]:prop}) => prop === value);
     } else {
+      console.log(rec, 'detailed level')
       return flat(rec.__children).filter(({[name]:prop}) => prop);
     }
   }
@@ -32,125 +33,161 @@ const addUndo = (list, rec, {undo=false}={}) => {
   }
 }
 
-const assignDescendants = (sourceRec, {undo=false}={}) => {
+const updateSucc = (sourceRec, {undo=false}={}) => {
   sourceRec.__assigned_ances = [];
 
-  const scanDescendant = (rec) => {
+  const scanDescendant = (descRec) => {
       
-    if (rec.__assigned_ances === undefined) {
-      rec.__assigned_ances = [];
+    if (descRec.__assigned_ances === undefined) {
+      descRec.__assigned_ances = [];
     }
-
-    addUndo(rec.__assigned_ances, sourceRec, {undo})
+    addUndo(descRec.__assigned_ances, sourceRec, {undo})
   }
 
-  if (sourceRec.__children){
-    trav(sourceRec.__children, scanDescendant);
-  }
+  const {__children: ch, __path: path} = sourceRec;
+  ch && trav(ch, scanDescendant, 'PRE', path);
 }
 
-const assignAncestors = (sourceSheet, sourceRec, {undo=false}={}) => {
+const updatePrev = (sourceSheet, sourceRec, {undo=false}={}) => {
   sourceRec.__assigned_desc = [];
 
   const {list} = get(sourceSheet, {path: sourceRec.__path, withList: true});
   list.pop();
-  for (let rec of list) {
-    if (rec.__assigned_desc === undefined) {
-      rec.__assigned_desc = [];
+
+  for (let AncesRec of list) {
+    if (AncesRec.__assigned_desc === undefined) {
+      AncesRec.__assigned_desc = [];
     }
     
-    addUndo(rec.__assigned_desc, sourceRec, {undo});
+    addUndo(AncesRec.__assigned_desc, sourceRec, {undo});
   }
 }
 
-const assignRec = (sourceRec, destRec) => {
+// 注意，这个函数要应用在即将被送往destination的records上。
+const getDestRec = (rec, cases, Sheets) => {
+  if (cases.length === 1) {
+    const {record} = fetch(cases[0].path, Sheets);
+    console.log(cases[0].path, record);
 
-  if (sourceRec.__assigned_desc.length > 0) {
-    return {code: 'FAIL_TRYING_ASSIGN_ANCESTOR_OF_OTHER_ASSIGNED'};
-  }
+    let error;
+    if (record === undefined) {
+      error = 'NOT_FOUND_DEST_RECORD'
+    }
 
-  if (sourceRec.__assigned_ances.length > 0) {
-    return {code: 'FAIL_TRYING_ASSIGN_ANCESTOR_OF_OTHER_ASSIGNED'};
-  }
-
-  if (destRec === undefined){
-    return {code: 'FAIL_TARGET_RECORD_NOT_EXIST'};
-  } else if (destRec.__children && destRec.__children.includes(sourceRec)){
-    return {code: 'WARN_POSSIBLE_DUPLICATE_ASSIGN'}
+    return {error, record};
   } else {
-    if (destRec.__children === undefined) {
-      destRec.__children = [];
-    }
-    destRec.__children.push(sourceRec);
+    
+    const cands = cases
+    .map(({cond, path}) => {
+      const {result} = evalExpr(cond, {Sheets, vars:rec});
+      return {result, path};
+    })
+    .filter(({result}) => result);
 
-    if (sourceRec.__destRecs === undefined) {
-      sourceRec.__destRecs = [];
-    }
-    sourceRec.__destRecs.push(destRec);
+    let {error, record} = cands.length < 1
+    ? {error: 'NONE_SATISFIED_CASES'}
+    : cands.length > 1
+    ? {error: 'MULTI_SATISFIED_CASES'}
+    : fetch(cands[0].path, Sheets);
 
-    return {};
+    if (record === undefined) {
+      error = 'NOT_FOUND_DEST_RECORD'
+    }
+
+    return {error, record};
   }
 }
 
-const assignSheet = (path, sourceRec, sourceSheet, Sheets) => {
+const assignSingleRec = (sourceRec, {undo=false, cases, Sheets}={}) => {
 
-  assignAncestors(sourceSheet, sourceRec, {undo:true})
-  assignDescendants(sourceRec, {undo:true})
-  
-  const {__destRecs:dest} = sourceRec;
-  if (dest) {
-    for (let {__children:ch} of dest) {
-      addUndo(ch, sourceRec, {undo:true});
+  // When undoing the current assignment of sourceRec, we don't care
+  // about destRec if it's present, since the current assignment has
+  // been stored in sourceRec.
+  if (undo) {
+    const {__dest_map:dest} = sourceRec;
+    if (dest) {
+      // Clear the assigned sourceRec @ destination.
+      for (let [{__children:ch}, assignedRecs] of dest) {
+        for (let assignedRec of assignedRecs) {
+          addUndo(ch, assignedRec, {undo:true});
+        }
+      }
+      // also clear the destinations @ dest after the last step.
+      dest.clear();
     }
-    dest.splice(0, dest.length);
-  }  
+  } else {
 
-  const {record:destRec} = fetch(path, Sheets);
-  if (path.length > 0){
-    assignAncestors(sourceSheet, sourceRec);
-    assignDescendants(sourceRec);
+    // check if the sourceRec is ancestor or descendends
+    if (sourceRec.__assigned_desc.length > 0) {
+      return {code: 'FAIL_TRYING_ASSIGN_ANCESTOR_OF_OTHER_ASSIGNED'};
+    } else if (sourceRec.__assigned_ances.length > 0) {
+      return {code: 'FAIL_TRYING_ASSIGN_DESCENDANT_OF_OTHER_ASSIGNED'};
+    }
+  
+    // if not problem, we create a map to store and track the assigned
+    // records. Since there could be multiple records to be applied, and
+    // possibly multiple destinations.
     
-    return assignRec(sourceRec, destRec);  
+    sourceRec.__dest_map = sourceRec.__dest_map || new Map();
+    
+    // if __apply_spec was not given, only one record, the sourceRec,
+    // will be assigned to destination. Note that we use directly push,
+    // since we don't wanted to change the path structure of both source
+    // and traget table.
+    
+    if (sourceRec.__apply_spec === undefined) {
+      const {error, record:destRec} = getDestRec(sourceRec, cases, Sheets);
+      if (error) {
+        return {code: error};
+      }
+      sourceRec.__dest_map.set(destRec, [sourceRec]);
+      
+      destRec.__children = destRec.__children || [];
+      destRec.__children.push(sourceRec);
+
+    } else {
+      const recsTobeApplied = getAppliedRecs(sourceRec, sourceRec.__apply_spec);
+
+      // The reason of separating the loop, assigning __dest_map and actually assign
+      // to dest, is because when we encounter error, we can simply stop and restore
+      // __dest_map, without affecting dest.__children. 
+      for (let appliedRec of recsTobeApplied) {
+        const {error, record:destRec} = getDestRec(appliedRec, cases, Sheets);
+        if (error) {
+          sourceRec.__dest_map.clear();
+          return {code: error};
+        }
+        
+        sourceRec.__dest_map.set(destRec, sourceRec.__dest_map.get(destRec) || []);
+        sourceRec.__dest_map.get(destRec).push(appliedRec);
+      }
+
+      console.log(sourceRec.__dest_map, 'check dest map');
+
+      for (let [dest, applied] of sourceRec.__dest_map) {
+        dest.__children = dest.__children || [];
+        dest.__children.push(...applied);
+      }
+    }
+
   }
 
   return {};
 }
 
-const getCands = (rec, cases, Sheets) => {
-  return cases.length === 1
-  ? [{result: true, path:cases[0].path}]
-  : cases.map(({cond, path}) => {
-    const {result} = evalExpr(cond, {Sheets, vars:rec});
-    return {result, path};
-  }).filter(({result}) => result);
-}
+const assignRec = (cases, rec, sourceSheet, Sheets) => {
 
-const condAssign = (cases, rec, sourceSheet, Sheets) => {
+  // removing previously assigned recs when we are re-assigning same
+  // sourceRec.
+  const undo = true;
+  updatePrev(sourceSheet, rec, {undo})
+  updateSucc(rec, {undo})
+  assignSingleRec(rec, {undo})
 
-  if (rec.__apply_spec === undefined) {
-    rec.__cands = getCands(rec, cases, Sheets);
-
-    const destPath = rec.__cands.length === 1
-    ? rec.__cands[0].path
-    : 'INVALID';
-  
-    return assignSheet(destPath, rec, sourceSheet, Sheets);
-  } else {
-
-    const finalyApplyTo = parseApplySpec(rec.__apply_spec, rec);
-    // console.log(finalyApplyTo, rec.__apply_spec, 'finallyAppliedTo');
-    for (let sub of finalyApplyTo) {
-      sub.__cands = getCands(sub, cases, Sheets);
-
-      const destPath = sub.__cands.length === 1
-      ? sub.__cands[0].path
-      : 'INVALID';
-
-      assignSheet(destPath, sub, sourceSheet, Sheets);
-    }
-    return {};
-  }
+  assignSingleRec(rec, {cases, Sheets});
+  updatePrev(sourceSheet, rec);
+  updateSucc(rec);
 }
 
 
-module.exports = condAssign;
+module.exports = assignRec;
