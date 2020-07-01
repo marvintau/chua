@@ -135,7 +135,7 @@ const assignSingleRec = (sourceRec, {undo=false, cases, Sheets}={}) => {
     // since we don't wanted to change the path structure of both source
     // and traget table.
     
-    if (sourceRec.__apply_spec === undefined) {
+    if (!sourceRec.__apply_spec) {
       const {error, record:destRec} = getDestRec(sourceRec, cases, Sheets);
       if (error) {
         return {code: error};
