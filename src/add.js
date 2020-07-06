@@ -3,6 +3,18 @@ const {isInteger, isPlainObject} = require('./util');
 const trav = require('./trav');
 const get = require('./get');
 
+const setParent = (recs, parent) => {
+  if (Array.isArray(recs) && recs.every(isPlainObject)) {
+    for (let rec of recs) {
+      rec.__parent = parent;
+    }
+  } else if (isPlainObject(recs)) {
+    recs.__parent = parent;
+  } else {
+    throw {code: 'INVALID_REC', from: 'add'}
+  }
+}
+
 const addArray = (array, recs, atIndex) => {
 
   if (Array.isArray(recs) && recs.every(isPlainObject)) {
@@ -89,6 +101,7 @@ const add = (array, recs, {path=[], atIndex}={}) => {
     }
 
     addArray(record.__children, recs, atIndex);
+    setParent(recs, record);
   }
 }
 

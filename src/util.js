@@ -148,6 +148,7 @@ const createRandomData = ({recs=1000, addProb=0.5, stopProb=0.5, schema, referre
         rec.__children = [];
       }
       rec.__children.push(newRec);
+      newRec.__parent = rec;
     } else {
       data.push(newRec);
     } 

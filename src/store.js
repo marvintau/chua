@@ -1,5 +1,4 @@
 
-const get = require('./get');
 const trav = require('./trav');
 const flat = require('./flat');
 const fetch = require('./fetch');
@@ -48,18 +47,18 @@ const updateSucc = (sourceRec, {undo=false}={}) => {
   ch && trav(ch, scanDescendant, 'PRE', path);
 }
 
-const updatePrev = (sourceSheet, sourceRec, {undo=false}={}) => {
+const updatePrev = (sourceRec, {undo=false}={}) => {
   sourceRec.__assigned_desc = [];
 
-  const {list} = get(sourceSheet, {path: sourceRec.__path, withList: true});
-  list.pop();
-
-  for (let AncesRec of list) {
+  let AncesRec = sourceRec.__parent;
+  while (AncesRec) {
     if (AncesRec.__assigned_desc === undefined) {
       AncesRec.__assigned_desc = [];
     }
     
     addUndo(AncesRec.__assigned_desc, sourceRec, {undo});
+
+    AncesRec = AncesRec.__parent;
   }
 }
 
@@ -138,6 +137,7 @@ const assignSingleRec = (sourceRec, {undo=false, cases, Sheets}={}) => {
     if (!sourceRec.__apply_spec) {
       const {error, record:destRec} = getDestRec(sourceRec, cases, Sheets);
       if (error) {
+        // console.log('getDestError', error, Sheets);
         return {code: error};
       }
       sourceRec.__dest_map.set(destRec, [sourceRec]);
@@ -175,17 +175,17 @@ const assignSingleRec = (sourceRec, {undo=false, cases, Sheets}={}) => {
   return {};
 }
 
-const assignRec = (cases, rec, sourceSheet, Sheets) => {
+const assignRec = (cases, rec, Sheets) => {
 
   // removing previously assigned recs when we are re-assigning same
   // sourceRec.
   const undo = true;
-  updatePrev(sourceSheet, rec, {undo})
+  updatePrev(rec, {undo})
   updateSucc(rec, {undo})
   assignSingleRec(rec, {undo})
 
   assignSingleRec(rec, {cases, Sheets});
-  updatePrev(sourceSheet, rec);
+  updatePrev(rec);
   updateSucc(rec);
 }
 

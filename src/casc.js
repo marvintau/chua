@@ -39,6 +39,7 @@ function casc(array, {cascCol, genFunc, matchFunc}={}) {
           
         if (matchFunc(parent, child)) try {
           parent.__children.push(child)
+          child.__parent = parent;
         }catch{
           throw Error('found')
         }
