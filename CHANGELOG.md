@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.45](https://github.com/marvintau/tree/compare/v1.0.44...v1.0.45) (2020-07-06)
+
+
+### Bug Fixes
+
+* updated cond assign ([3d8dcec](https://github.com/marvintau/tree/commit/3d8dcec25c8f22d2fee5e88644852c90e5f079af))
+
 ### [1.0.44](https://github.com/marvintau/tree/compare/v1.0.43...v1.0.44) (2020-07-01)
 
 
