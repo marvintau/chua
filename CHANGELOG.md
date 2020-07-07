@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.46](https://github.com/marvintau/tree/compare/v1.0.45...v1.0.46) (2020-07-07)
+
+
+### Bug Fixes
+
+* changed update ancestor of conditional assign ([4b82370](https://github.com/marvintau/tree/commit/4b82370e1c048fffbea7ec3f89994f8c810d6451))
+
 ### [1.0.45](https://github.com/marvintau/tree/compare/v1.0.44...v1.0.45) (2020-07-06)
 
 
