@@ -15,7 +15,7 @@ const getAppliedRecs = (rec, applySpec) => {
     if (value !== undefined) {
       return flat(rec.__children).filter(({[name]:prop}) => prop === value);
     } else {
-      console.log(rec, 'detailed level')
+      // console.log(rec, 'detailed level')
       return flat(rec.__children).filter(({[name]:prop}) => prop);
     }
   }
@@ -36,15 +36,20 @@ const updateSucc = (sourceRec, {undo=false}={}) => {
   sourceRec.__assigned_ances = [];
 
   const scanDescendant = (descRec) => {
-      
     if (descRec.__assigned_ances === undefined) {
       descRec.__assigned_ances = [];
     }
     addUndo(descRec.__assigned_ances, sourceRec, {undo})
+    // if (!undo && descRec.__detailed_level) console.log(descRec.ccode_name, descRec.__assigned_ances, 'succ');
   }
 
-  const {__children: ch, __path: path} = sourceRec;
-  ch && trav(ch, scanDescendant, 'PRE', path);
+  const {__children: ch} = sourceRec;
+  if (ch && ch.length > 0) {
+    const flattened = flat(ch);
+    for (let rec of flattened) {
+      scanDescendant(rec);
+    }
+  }
 }
 
 const updatePrev = (sourceRec, {undo=false}={}) => {
@@ -66,7 +71,7 @@ const updatePrev = (sourceRec, {undo=false}={}) => {
 const getDestRec = (rec, cases, Sheets) => {
   if (cases.length === 1) {
     const {record} = fetch(cases[0].path, Sheets);
-    console.log(cases[0].path, record);
+    // console.log(cases[0].path, record);
 
     let error;
     if (record === undefined) {
@@ -162,7 +167,7 @@ const assignSingleRec = (sourceRec, {undo=false, cases, Sheets}={}) => {
         sourceRec.__dest_map.get(destRec).push(appliedRec);
       }
 
-      console.log(sourceRec.__dest_map, 'check dest map');
+      // console.log(sourceRec.__dest_map, 'check dest map');
 
       for (let [dest, applied] of sourceRec.__dest_map) {
         dest.__children = dest.__children || [];
