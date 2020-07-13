@@ -57,7 +57,7 @@
     "pegjs-jest": "0.0.2",
     "pegjs-loader": "^0.5.6",
     "performance-now": "^2.1.0",
-    "standard-version": "^8.0.0",
+    "standard-version": "^8.0.1",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
     "window": "^4.2.7"
