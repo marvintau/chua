@@ -41,7 +41,7 @@
   "author": "marvintau",
   "license": "MIT",
   "dependencies": {
-    "xlsx": "^0.15.6"
+    "xlsx": "^0.17.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^8.3.4",
